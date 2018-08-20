@@ -50,3 +50,18 @@ void GameData::increaseScore(int increaseVal) {
    cout << "score : " << score;
    BashCursor::resume();
 }
+
+void GameData::updateNext(Tetromino* newNext) {
+   this->next = newNext;
+   newNext->print(true, 14, 7);
+}
+
+Tetromino* GameData::getNext() {
+   return next;
+}
+
+GameData::~GameData() {
+   if (next != NULL) {
+      delete next;
+   }
+}

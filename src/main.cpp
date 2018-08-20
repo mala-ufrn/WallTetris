@@ -3,6 +3,7 @@
 #include "../include/game_data.h"
 
 int main(int argc, char *argv[]) {
+	
 	GameData *gData = new GameData();
 	system("clear");
 	system("stty -icanon -echo");
@@ -20,7 +21,11 @@ int main(int argc, char *argv[]) {
 	gData->initDataPane();
 	fflush(stdout);
 
+	gData->updateNext(new Tetromino(NULL));
+	fflush(stdout);
+
 	delete gData;
 	system("stty icanon echo");
 	system("clear");
+	return 0;
 }

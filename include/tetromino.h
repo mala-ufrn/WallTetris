@@ -13,11 +13,17 @@ private:
 		y;
 	int shape[4][4];
 	Color color;
-	void *wellRef;
+	void *well;
 
 public:
-	Tetromino(int x, int y, void* wellRef);
-	
+	// Tetromino object constructor;
+	Tetromino(void* well);
+	// Rotates the tretomino how many times given by parameter (default = 1)
+	void rotate(int times = 1);
+	// Print the tetromino on the well
+	void print(bool onGui = false, int gui_x = 0, int gui_y = 0);
+	// Prints the tetromino on GUI at given position (x, y)
+	void clear(bool onGui = false, int gui_x = 0, int gui_y = 0);
 };
 
 #endif // TETROMINO_H_
