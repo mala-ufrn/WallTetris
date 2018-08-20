@@ -1,4 +1,4 @@
-#include "../include/game_data.h"
+#include "../include/game.h"
 
 #include <iostream>
 using std::cout;
@@ -6,7 +6,27 @@ using std::cout;
 #include "../include/block_printer.h"
 #include "../include/bash_cursor.h"
 
-void GameData::initDataPane() {
+void Game::init() {
+   score = 0;
+   BashCursor::move(0, 5);
+   printWell();
+   printHud();
+   createNextTetr();
+}
+
+void Game::printWellBounds() {
+   int i;
+   for(i = 0; i < 24; i++) {
+      BlockPrinter::print(i, 0, BLUE);
+      BlockPrinter::print(i, 11, BLUE);
+   }
+   for(i = 0; i < 12; i++) {
+      BlockPrinter::print(23, i, BLUE);
+      BlockPrinter::print(0, i, RED);
+   }
+}
+
+void Game::printHud(){
    // Player name
    BashCursor::save();
    BlockPrinter::print(2, 14, WHITE);
@@ -41,27 +61,31 @@ void GameData::initDataPane() {
    BashCursor::move(16,14);
    cout << "p: run or pause";
    BashCursor::resume();
+
+   fflush(stdout);
 }
 
-void GameData::increaseScore(int increaseVal) {
-   score += increaseVal;
+void Game::increaseScore(int value) {
+   score += value;
    BashCursor::save();
    BashCursor::move(4,16);
    cout << "score : " << score;
    BashCursor::resume();
+
+   fflush(stdout);
 }
 
-void GameData::updateNext(Tetromino* newNext) {
-   this->next = newNext;
-   newNext->print(true, 14, 7);
+void Game::createNextTetr() {
+   nextTetr = new Tetromino(NULL);
+   nextTetr->print(true, 14, 7);
 }
 
-Tetromino* GameData::getNext() {
-   return next;
+Tetromino* Game::getNextTetr() {
+   return nextTetr;
 }
 
-GameData::~GameData() {
-   if (next != NULL) {
-      delete next;
+Game::~Game() {
+   if (nextTetr != NULL) {
+      delete nextTetr;
    }
 }

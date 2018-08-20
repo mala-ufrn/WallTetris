@@ -1,6 +1,7 @@
 #include "../include/tetromino.h"
 
 #include <string.h>
+#include <iostream>
 
 #include "../include/utils.h"
 
@@ -44,39 +45,43 @@ Tetromino::Tetromino(void* well) {
 	if (rot == 2 && type != 0 && type != 3) {
 		y -= 1;
 	} else if (type == 0){
-		y-= rot == 1? 2 : rot == 2? 1 : 0;
+		y-= rot == 1? 2 : rot == 3? 1 : 0;
 	}
 }
 
 void Tetromino::rotate(int times) {
 
-	if(type == 0) {
-		int i, j;
-	    int b[4][4];
-	    for(i = 0; i < 4; i++) {
-	        for(j = 0; j < 4; j++) {
-	            b[3-j][i] = shape[i][j];
-	        }
+	if (type != 3) {
+		while(times-- > 0) {
+			if(type == 0) {
+				int i, j;
+			    int b[4][4];
+			    for(i = 0; i < 4; i++) {
+			        for(j = 0; j < 4; j++) {
+			            b[3-j][i] = shape[i][j];
+			        }
+			    }
+			    for(i = 0; i < 4; i++) {
+			        for(j = 0; j < 4; j++) {
+			            shape[i][j] = b[i][j];
+			        }
+			    }
+			} else {
+				int i, j;
+			    int b[3][3];
+			    for(i = 0; i < 3; i++) {
+			        for(j = 0; j < 3; j++) {
+			            b[2-j][i] = shape[i][j];
+			        }
+			    }
+			    for(i = 0; i < 3; i++) {
+			        for(j = 0; j < 3; j++) {
+			            shape[i][j] = b[i][j];
+			        }
+			    }
+			}
 	    }
-	    for(i = 0; i < 4; i++) {
-	        for(j = 0; j < 4; j++) {
-	            shape[i][j] = b[i][j];
-	        }
-	    }
-	} else if (type != 3) {
-		int i, j;
-	    int b[3][3];
-	    for(i = 0; i < 3; i++) {
-	        for(j = 0; j < 3; j++) {
-	            b[2-j][i] = shape[i][j];
-	        }
-	    }
-	    for(i = 0; i < 3; i++) {
-	        for(j = 0; j < 3; j++) {
-	            shape[i][j] = b[i][j];
-	        }
-	    }
-    }
+}
 }
 
 void Tetromino::print(bool onGui, int gui_x, int gui_y) {
@@ -92,6 +97,8 @@ void Tetromino::print(bool onGui, int gui_x, int gui_y) {
             }
         }
     }
+
+    fflush(stdout);
 }
 
 void Tetromino::clear(bool onGui, int gui_x, int gui_y) {
@@ -107,4 +114,6 @@ void Tetromino::clear(bool onGui, int gui_x, int gui_y) {
             }
         }
     }
+
+    fflush(stdout);
 }
