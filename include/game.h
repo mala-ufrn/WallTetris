@@ -15,6 +15,8 @@ private:
     int score;
     //Next tetromino
     Tetromino* nextTetr;
+    //Active tetromino
+    Tetromino* activeTetr;
 
 public:
 	//Constructor the score object reference

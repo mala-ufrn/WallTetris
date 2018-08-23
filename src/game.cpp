@@ -8,10 +8,18 @@ using std::cout;
 
 void Game::init() {
    score = 0;
+
+   //Start Position
    BashCursor::move(0, 5);
-   printWell();
+   
+   printWellBounds();
    printHud();
+   
+   //Initialize the tetrominoes generation
+   nextTetr = new Tetromino(NULL);
    createNextTetr();
+
+   activeTetr->print();
 }
 
 void Game::printWellBounds() {
@@ -76,6 +84,8 @@ void Game::increaseScore(int value) {
 }
 
 void Game::createNextTetr() {
+   nextTetr->clear(true, 14, 17);
+   activeTetr = nextTetr;
    nextTetr = new Tetromino(NULL);
    nextTetr->print(true, 14, 7);
 }

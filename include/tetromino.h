@@ -9,6 +9,7 @@ private:
 	static const Color COLORS[7];
 
 	int type,
+		rotation,
 		x,
 		y;
 	int shape[4][4];

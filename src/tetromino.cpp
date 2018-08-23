@@ -31,6 +31,7 @@ Tetromino::Tetromino(void* well) {
 
 	x = 4;
 	y = 1;
+	rotation = 0;
 
 	type = Utils::randNum(7); // Define type
 	int rot = Utils::randNum(4); // Define initial rotation
@@ -50,7 +51,7 @@ Tetromino::Tetromino(void* well) {
 }
 
 void Tetromino::rotate(int times) {
-
+	rotation = (rotation + times) % 4;
 	if (type != 3) {
 		while(times-- > 0) {
 			if(type == 0) {
