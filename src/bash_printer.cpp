@@ -1,5 +1,7 @@
 #include "../include/bash_printer.h"
 
+#include <signal.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <iostream>
 using std::cout;
@@ -30,6 +32,12 @@ BashPrinter::BashPrinter() {
 }
 
 void BashPrinter::init(string player, Drawable* field) {
+  //Set handler function
+  signal(SIGINT, SignalHandlerFunction);
+
+  system("clear");
+  system("stty -icanon -echo");
+
   printerMutex.lock();
   //Adds left padding
   moveCursor(START_X, START_Y);
@@ -37,12 +45,12 @@ void BashPrinter::init(string player, Drawable* field) {
   int height = field->getHeight(),
       width = field->getWidth();
 
-  for(int i = i; i < height+1; i++) {
+  for(int i = 1; i < height+1; i++) {
     printBlock(0, i, NAIVE_BLUE);
     printBlock(width+1, i, NAIVE_BLUE);
   }
   for(int i = 0; i < width+2; i++) {
-    printBlock(i, height+1, NAIVE_BLUE);
+    printBlock(i, height, NAIVE_BLUE);
     printBlock(i, 0, RED);
   }
 
@@ -69,9 +77,9 @@ void BashPrinter::init(string player, Drawable* field) {
   moveCursor(field->getWidth()+5+START_X, 0);
   cout << "d: go to right" << endl;
   moveCursor(field->getWidth()+5+START_X, 0);
-  cout << "w: roll cube" << endl;
+  cout << "w: roll tetromino" << endl;
   moveCursor(field->getWidth()+5+START_X, 0);
-  cout << "s: go to down" << endl;
+  cout << "s: speed up fall" << endl;
   moveCursor(field->getWidth()+5+START_X, 0);
   cout << "p: pause/resume";
   resumeCursor();
@@ -168,6 +176,33 @@ void BashPrinter::updateScore(int value) {
 
   fflush(stdout);
   printerMutex.unlock();
+}
+
+void BashPrinter::showGameOver(){
+  printerMutex.lock();
+
+  saveCursor();
+  moveCursor(4,10);
+  cout<<"GAME OVER";
+  resumeCursor();
+  moveCursor(3,12);
+  cout<<"Press any key";
+  resumeCursor();
+
+  fflush(stdout);
+  printerMutex.unlock();
+
+  getchar();
+  system("stty icanon echo");
+  system("clear");
+}
+
+void BashPrinter::SignalHandlerFunction (int sig)
+{
+  system("stty icanon echo");
+  system("clear");
+  fflush(stdout);
+  kill(getpid(), SIGKILL);
 }
 
 void BashPrinter::printBlock(int x, int y, int color) {

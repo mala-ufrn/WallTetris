@@ -5,6 +5,8 @@
 #include "../include/utils.h"
 #include "../include/bash_printer.h"
 
+mutex Tetromino::tetrMutex;
+
 const unsigned char Tetromino::SHAPES[TYPES][DIM][DIM] = {
   //Type I
   {{0, 0, 0, 0}, {'b', 'b', 'b', 'b'}, {0, 0, 0, 0}, {0, 0, 0, 0}},
@@ -31,6 +33,7 @@ Tetromino::Tetromino(Field* field, Master* master, Drawer* drawer) {
   y = 0;
 
   type = Utils::randNum(TYPES); // Define type
+  fallVelocity = 1.5;
 
   shape = (unsigned char**)malloc(DIM * sizeof(unsigned char*));
   for (int i = 0; i < DIM; ++i) {
@@ -48,6 +51,98 @@ Tetromino::~Tetromino() {
   free(shape);
 }
 
+void Tetromino::init(){
+  //Draw the tetromino on start position
+  drawer->updateActivePiece(this, x, y);
+
+  //Check the entry for game over condition
+  if(!dontHasConflict(shape, field, DIM, x, y)) {
+    master->gameOver();
+  }
+  
+  // Stores the clock measure
+  clockCheckPoint = clock();
+}
+
+void Tetromino::update() {
+  float elapsedTime = 
+      ((float)(clock() - clockCheckPoint)) / CLOCKS_PER_SEC;
+  if (elapsedTime >= 1 / fallVelocity) {
+    moveDown();
+    clockCheckPoint = clock();
+  }
+}
+
+void Tetromino::moveLeft(){
+  tetrMutex.lock();
+  if(dontHasConflict(shape, field, DIM, x - 1, y)) {
+    drawer->updateActivePiece(this, --x, y);
+  }
+  tetrMutex.unlock();
+}
+
+void Tetromino::moveRight(){
+  tetrMutex.lock();
+  if(dontHasConflict(shape, field, DIM, x + 1, y)) {
+    drawer->updateActivePiece(this, ++x, y);
+  }
+  tetrMutex.unlock();
+}
+
+void Tetromino::moveDown(){
+  tetrMutex.lock();
+  if(dontHasConflict(shape, field, DIM, x, y + 1)) {
+    drawer->updateActivePiece(this, x, ++y);
+    tetrMutex.unlock();
+  } else {
+    field->attachTetrShape(shape, DIM, x, y);
+    tetrMutex.unlock();
+    delete this;
+  }
+}
+
+void Tetromino::speedUp(){}
+
+void Tetromino::rotate() {
+  if(type != 3) {
+    int d = (type == 0)? 4 : 3;
+    unsigned char** b = (unsigned char**)malloc(d * sizeof(unsigned char*));
+    for(int i = 0; i < d; i++) {
+      b[i] = (unsigned char*)malloc(d * sizeof(unsigned char));
+      for(int j = 0; j < d; j++) {
+        b[d-1-j][i] = shape[i][j];
+      }
+    }
+    bool commit = dontHasConflict(b, field, d, x, y);
+    for(int i = 0; i < d; i++) {
+      for(int j = 0; j < d; j++) {
+        if (commit){
+          shape[i][j] = b[i][j];
+        }
+      }
+      free(b[i]);
+    }
+    free(b);
+    if(commit){
+      drawer->updateActivePiece(this, x, y);
+    }
+  }
+}
+
+bool Tetromino::dontHasConflict(
+    unsigned char** shape, Field* field, int dim, int x, int y) {
+  unsigned char** fShape = field->getShape();
+  int fHeight = field->getHeight();
+  for(int i = 0; i < dim; i++) {
+    for(int j = 0; j < dim; j++) {
+      if (shape[i][j] != 0 && (y + i >= fHeight || fShape[y+i][x+j] != 0)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 unsigned char** Tetromino::getShape() {
   return shape;
 }
@@ -58,22 +153,4 @@ int Tetromino::getWidth() {
 
 int Tetromino::getHeight() {
   return DIM;
-}
-
-void Tetromino::rotate() {
-  if (type != 3) {
-    int d = (type == 0)? 4 : 3;
-    int b[d][d];
-    for(int i = 0; i < d; i++) {
-      for(int j = 0; j < d; j++) {
-        b[d-1-j][i] = shape[i][j];
-      }
-    }
-    // TO DO Paused here
-    for(int i = 0; i < 4; i++) {
-      for(int j = 0; j < 4; j++) {
-        shape[i][j] = b[i][j];
-      }
-    }
-  }
 }

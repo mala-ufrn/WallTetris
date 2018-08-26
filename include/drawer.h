@@ -13,6 +13,7 @@ public:
   virtual void updateActivePiece(Drawable* piece, int x, int y) = 0;
   virtual void updateScore(int value) = 0;
   virtual void updateNext(Drawable* piece) = 0;
+  virtual void showGameOver() = 0;
   virtual void draw() = 0;
 };
 

@@ -1,21 +1,28 @@
 #ifndef TETROMINO_H_
 #define TETROMINO_H_
 
+#include <time.h>
+#include <mutex>
+using std::mutex;
+
 #include "field.h"
 #include "master.h"
 #include "drawer.h"
-#include "drawable.h"
 
 class Tetromino : public Drawable{
 private:
   static const int DIM = 4;
   static const int TYPES = 7;
   static const unsigned char SHAPES[TYPES][DIM][DIM];
+  static mutex tetrMutex;
 
   int type,
     x,
     y;
   unsigned char **shape;
+  clock_t clockCheckPoint;
+  // Velocity in blocks/s
+  float fallVelocity;
   Field *field;
   Master *master;
   Drawer* drawer;
@@ -25,18 +32,31 @@ public:
   Tetromino(Field* field, Master* master, Drawer* drawer);
   // Tetromino object constructor;
   ~Tetromino();
+  // Prints tetromino and checks the entry
+  void init();
+  // Executes the automatic behaviour
+  void update();
+  // Moves tetromino left if possible
+  void moveLeft();
+  // Moves tetromino right if possible
+  void moveRight();
+  // Speeds up tretomino fall
+  void speedUp();
+  // Rotates the tretomino
+  void rotate();
   // Returns the tretomino shape by reference
   unsigned char** getShape();
   // Returns tretomino's mumber of columns
   int getWidth();
   // Returns tretomino's mumber of rows
   int getHeight();
-  // Rotates the tretomino
-  void rotate();
-  // Print the tetromino on the well
-  void print(bool onGui = false, int gui_x = 0, int gui_y = 0);
-  // Prints the tetromino on GUI at given position (x, y)
-  void clear(bool onGui = false, int gui_x = 0, int gui_y = 0);
+private:
+  // Moves tetromino down or attach it to field
+  void moveDown();
+  // Checks moveValidity
+  static bool dontHasConflict(
+      unsigned char** shape, Field* field, int dim, int x, int y);
+  
 };
 
 #endif // TETROMINO_H_

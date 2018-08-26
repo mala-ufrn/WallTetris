@@ -33,9 +33,13 @@ public:
   void updateNext(Drawable* piece);
   //Updates the score shown on UI
   void updateScore(int value);
+  //Shows gameover message
+  void showGameOver();
   //Draw method for game loop, EMPTY for bash variation
   void draw(){};
 private:
+  //Handles TERM signal to restore echo
+  static void SignalHandlerFunction (int sig);
   //Print the block on position (x, y) with the selected color
   static void printBlock(int x, int y, int color);
   //Save the cursor position

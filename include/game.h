@@ -11,6 +11,8 @@ using std::string;
 
 class Game : public Master{
 private:
+  //Flag for main loop
+  bool playing;
   //Player name
   string player;
   //Player score
@@ -26,22 +28,22 @@ private:
 
 public:
   //Constructor for Games objects
-  Game(Drawer* drawer){this->drawer = drawer; player = "Player01";};
+  Game(Drawer* drawer);
   //Destructor for Games objects
   ~Game();
   //Change the player atribute
   void setPlayer(string name){player = name;};
   //Prints the start screen and instantiates the initial pieces.
   void init();
+  //Main loop execution method
+  void update();
+  //Returns true if is not game over;
+  bool isPlaying();
   //create and show next tetromino
   void createNextTetr();
-  //Gives the next tretomino's reference
-  Tetromino* getNextTetr();
   //Update and show score increased by parameter value
   void increaseScore(int value);
   //Finish the game
   void gameOver();
-    
-    
 };
 #endif // GAME_DATA_H_

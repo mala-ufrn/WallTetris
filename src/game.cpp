@@ -1,17 +1,33 @@
 #include "../include/game.h"
 
+Game::Game(Drawer* drawer){
+  player = "Player01";
+  
+  field = new Field(this, drawer);
+  nextTetr = NULL;
+  activeTetr = NULL;
+  this->drawer = drawer;
+}
+
 void Game::init() {
+  //Starts the score
   score = 0;
 
-  //instantiate the game field
-  field = new Field(this, drawer);
+  playing = true;
   //draws the start screen;
   drawer->init(player, field);
 
   //initialize the tetrominoes
   nextTetr = new Tetromino(field, this, drawer);
   createNextTetr();
-  drawer->updateActivePiece(activeTetr, 4, 0);
+}
+
+void Game::update() {
+  activeTetr->update();
+}
+
+bool Game::isPlaying(){
+  return playing;
 }
 
 void Game::increaseScore(int value) {
@@ -20,13 +36,15 @@ void Game::increaseScore(int value) {
 }
 
 void Game::gameOver(){
-  //TO DO
+  drawer->showGameOver();
+  playing = false;
 }
 
 void Game::createNextTetr() {
   activeTetr = nextTetr;
   nextTetr = new Tetromino(field, this, drawer);
   drawer->updateNext(nextTetr);
+  activeTetr->init();
 }
 
 Game::~Game() {

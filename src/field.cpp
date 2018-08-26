@@ -4,7 +4,7 @@
 
 #include "../include/bash_printer.h"
 
-#define FIELD_NUM_ROWS 21
+#define FIELD_NUM_ROWS 22
 #define FIELD_NUM_COLS 10
 
 Field::Field(Master *master, Drawer* drawer) {
@@ -30,24 +30,26 @@ Field::~Field() {
 
 void Field::attachTetrShape(unsigned char** tetrShape, int dim, int x, int y) {
   // TO DO
+  checkLines();
+  master->createNextTetr();
 }
 
 void Field::checkLines() {
-  bool flag = false;
-  for (int i = 22; i > 0; i--) {
-    for (int j = 1; j < 11; j++) {
+  bool lineComplete = true;
+  for (int i = FIELD_NUM_ROWS-1; i > 0; i--) {
+    for (int j = 0; j < FIELD_NUM_COLS; j++) {
       if (shape[i][j] == 0) {
-        flag = true;
+        lineComplete = false;
       }
     }
-    if (flag == false) {
+    if (lineComplete) {
       //Add points!
       master->increaseScore(100);
       //Down the lines above
       clearLine(i);
       i = i + 1;
     }
-    flag = false;
+    lineComplete = true;
    }
 }
 
