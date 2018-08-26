@@ -6,12 +6,12 @@
 bool Utils::init = false;
 
 float Utils::randNum(int x) {
-	int num;
+  int num;
 
-	if (!init){
-		srand(unsigned(time(0)));
-		init = true;
-	}
+  if (!init){
+    srand(unsigned(time(0)));
+    init = true;
+  }
 
-	return rand() % x;
+  return rand() % x;
 }

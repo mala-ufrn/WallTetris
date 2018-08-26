@@ -1,30 +1,42 @@
 #ifndef TETROMINO_H_
 #define TETROMINO_H_
 
-#include "block_printer.h"
+#include "field.h"
+#include "master.h"
+#include "drawer.h"
+#include "drawable.h"
 
-class Tetromino {
+class Tetromino : public Drawable{
 private:
-	static const int SHAPES[7][4][4];
-	static const Color COLORS[7];
+  static const int DIM = 4;
+  static const int TYPES = 7;
+  static const unsigned char SHAPES[TYPES][DIM][DIM];
 
-	int type,
-		rotation,
-		x,
-		y;
-	int shape[4][4];
-	Color color;
-	void *well;
+  int type,
+    x,
+    y;
+  unsigned char **shape;
+  Field *field;
+  Master *master;
+  Drawer* drawer;
 
 public:
-	// Tetromino object constructor;
-	Tetromino(void* well);
-	// Rotates the tretomino how many times given by parameter (default = 1)
-	void rotate(int times = 1);
-	// Print the tetromino on the well
-	void print(bool onGui = false, int gui_x = 0, int gui_y = 0);
-	// Prints the tetromino on GUI at given position (x, y)
-	void clear(bool onGui = false, int gui_x = 0, int gui_y = 0);
+  // Tetromino object constructor;
+  Tetromino(Field* field, Master* master, Drawer* drawer);
+  // Tetromino object constructor;
+  ~Tetromino();
+  // Returns the tretomino shape by reference
+  unsigned char** getShape();
+  // Returns tretomino's mumber of columns
+  int getWidth();
+  // Returns tretomino's mumber of rows
+  int getHeight();
+  // Rotates the tretomino
+  void rotate();
+  // Print the tetromino on the well
+  void print(bool onGui = false, int gui_x = 0, int gui_y = 0);
+  // Prints the tetromino on GUI at given position (x, y)
+  void clear(bool onGui = false, int gui_x = 0, int gui_y = 0);
 };
 
 #endif // TETROMINO_H_
