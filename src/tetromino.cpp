@@ -5,6 +5,9 @@
 #include "../include/utils.h"
 #include "../include/bash_printer.h"
 
+#define NORMAL_VEL 1.5
+#define SPEED_UP_VEL 15
+
 mutex Tetromino::tetrMutex;
 
 const unsigned char Tetromino::SHAPES[TYPES][DIM][DIM] = {
@@ -33,7 +36,7 @@ Tetromino::Tetromino(Field* field, Master* master, Drawer* drawer) {
   y = 0;
 
   type = Utils::randNum(TYPES); // Define type
-  fallVelocity = 1.5;
+  fallVelocity = NORMAL_VEL;
 
   shape = (unsigned char**)malloc(DIM * sizeof(unsigned char*));
   for (int i = 0; i < DIM; ++i) {
@@ -65,12 +68,23 @@ void Tetromino::init(){
 }
 
 void Tetromino::update() {
+
   float elapsedTime = 
       ((float)(clock() - clockCheckPoint)) / CLOCKS_PER_SEC;
   if (elapsedTime >= 1 / fallVelocity) {
     moveDown();
     clockCheckPoint = clock();
+    fallVelocity = NORMAL_VEL;
   }
+}
+
+void Tetromino::pause() {
+  pauseOffSet = clock() - clockCheckPoint;
+}
+
+void Tetromino::resume() {
+  clockCheckPoint = clock() - pauseOffSet;
+  drawer->updateActivePiece(this, x, y);
 }
 
 void Tetromino::moveLeft(){
@@ -101,18 +115,24 @@ void Tetromino::moveDown(){
   }
 }
 
-void Tetromino::speedUp(){}
+void Tetromino::speedUp(){
+  fallVelocity = SPEED_UP_VEL;
+}
 
 void Tetromino::rotate() {
+  tetrMutex.lock();
   if(type != 3) {
     int d = (type == 0)? 4 : 3;
     unsigned char** b = (unsigned char**)malloc(d * sizeof(unsigned char*));
     for(int i = 0; i < d; i++) {
       b[i] = (unsigned char*)malloc(d * sizeof(unsigned char));
+    }
+    for(int i = 0; i < d; i++) {
       for(int j = 0; j < d; j++) {
         b[d-1-j][i] = shape[i][j];
       }
     }
+
     bool commit = dontHasConflict(b, field, d, x, y);
     for(int i = 0; i < d; i++) {
       for(int j = 0; j < d; j++) {
@@ -127,6 +147,7 @@ void Tetromino::rotate() {
       drawer->updateActivePiece(this, x, y);
     }
   }
+  tetrMutex.unlock();
 }
 
 bool Tetromino::dontHasConflict(

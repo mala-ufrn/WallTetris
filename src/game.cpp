@@ -12,18 +12,22 @@ Game::Game(Drawer* drawer){
 void Game::init() {
   //Starts the score
   score = 0;
-
   playing = true;
+  paused = false;
   //draws the start screen;
   drawer->init(player, field);
 
   //initialize the tetrominoes
   nextTetr = new Tetromino(field, this, drawer);
   createNextTetr();
+
+  controller = thread(&Game::listenKeys, this);
 }
 
 void Game::update() {
-  activeTetr->update();
+  if(!paused) {
+    activeTetr->update();
+  }
 }
 
 bool Game::isPlaying(){
@@ -36,8 +40,9 @@ void Game::increaseScore(int value) {
 }
 
 void Game::gameOver(){
-  drawer->showGameOver();
   playing = false;
+  drawer->showGameOver();
+  controller.join();
 }
 
 void Game::createNextTetr() {
@@ -45,6 +50,40 @@ void Game::createNextTetr() {
   nextTetr = new Tetromino(field, this, drawer);
   drawer->updateNext(nextTetr);
   activeTetr->init();
+}
+
+void Game::listenKeys() {
+  char key;
+  while(playing) {
+    key = getchar();
+    switch(key) {
+      case 'a':
+        activeTetr->moveLeft();
+        break;
+      case 'd':
+        activeTetr->moveRight();
+        break;
+      case 'w':
+        activeTetr->rotate();
+        break;
+      case 's':
+        activeTetr->speedUp();
+        break;
+      case 'p':
+        if(paused) {
+          paused = false;
+          drawer->updateField(field);
+          activeTetr->resume();
+        } else {
+          paused = true;
+          drawer->showPause();
+          activeTetr->pause();
+        }
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 Game::~Game() {

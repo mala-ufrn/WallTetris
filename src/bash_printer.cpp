@@ -116,7 +116,7 @@ void BashPrinter::updateActivePiece(Drawable* piece, int x, int y){
 
   // clear on last position/rotation;
   if(piece == lastPiece) {
-    for(int i = (lastX == 0)? 1 : 0; i < dimention; i++) {
+    for(int i = 0; i < dimention; i++) {
       for(int j = 0; j < dimention; j++) {
         if(lastShape[i][j] != 0) {
           printBlock(lastX + j + 1, lastY + i, CLEAR);
@@ -125,13 +125,16 @@ void BashPrinter::updateActivePiece(Drawable* piece, int x, int y){
     }
   }
   // draw the piece
-  for(int i = (x == 0)? 1 : 0; i < dimention; i++) {
+  for(int i = 0; i < dimention; i++) {
     for(int j = 0; j < dimention; j++) {
-      //Memorize last shape
-      lastShape[i][j] = shape[i][j];
+      if (y == 0 && i == 0) {
+        lastShape[i][j] = 0;
+      } else {
+        lastShape[i][j] = shape[i][j];
 
-      if(shape[i][j] != 0) {
-        printBlock(x + j + 1, y + i, shape[i][j]);
+        if(shape[i][j] != 0) {
+          printBlock(x + j + 1, y + i, shape[i][j]);
+        }
       }
     }
   }
@@ -195,6 +198,18 @@ void BashPrinter::showGameOver(){
   getchar();
   system("stty icanon echo");
   system("clear");
+}
+
+void BashPrinter::showPause(){
+  printerMutex.lock();
+
+  saveCursor();
+  moveCursor(5,10);
+  cout<<"PAUSE";
+  resumeCursor();
+
+  fflush(stdout);
+  printerMutex.unlock();
 }
 
 void BashPrinter::SignalHandlerFunction (int sig)

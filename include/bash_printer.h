@@ -33,6 +33,8 @@ public:
   void updateNext(Drawable* piece);
   //Updates the score shown on UI
   void updateScore(int value);
+  //Shows pause message
+  void showPause();
   //Shows gameover message
   void showGameOver();
   //Draw method for game loop, EMPTY for bash variation

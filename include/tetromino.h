@@ -21,6 +21,7 @@ private:
     y;
   unsigned char **shape;
   clock_t clockCheckPoint;
+  clock_t pauseOffSet;
   // Velocity in blocks/s
   float fallVelocity;
   Field *field;
@@ -34,6 +35,10 @@ public:
   ~Tetromino();
   // Prints tetromino and checks the entry
   void init();
+  // Stores the clock info
+  void pause();
+  // Uses clock info to recalculate the fall behavior and draw tetromino
+  void resume();
   // Executes the automatic behaviour
   void update();
   // Moves tetromino left if possible

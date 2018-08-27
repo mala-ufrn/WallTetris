@@ -63,7 +63,7 @@ void Field::checkLines() {
 
 void Field::clearLine(int level) {
   for(int i = level; i > 1; i--) {
-    for(int j = 1; j < 11; j++) {
+    for(int j = 0; j < FIELD_NUM_COLS; j++) {
       shape[i][j] = shape[i - 1][j];
     }
   }

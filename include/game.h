@@ -3,6 +3,8 @@
 
 #include <string>
 using std::string;
+#include <thread>
+using std::thread;
 
 #include "master.h"
 #include "tetromino.h"
@@ -13,6 +15,8 @@ class Game : public Master{
 private:
   //Flag for main loop
   bool playing;
+  //Flag for pause
+  bool paused;
   //Player name
   string player;
   //Player score
@@ -25,6 +29,8 @@ private:
   Tetromino* activeTetr;
   //Object that draws the game scene
   Drawer* drawer;
+  // Thread for inputs listen
+  thread controller;
 
 public:
   //Constructor for Games objects
@@ -45,5 +51,7 @@ public:
   void increaseScore(int value);
   //Finish the game
   void gameOver();
+private:
+  void listenKeys();
 };
 #endif // GAME_DATA_H_
