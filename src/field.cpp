@@ -1,6 +1,7 @@
 #include "../include/field.h"
 
 #include <stdlib.h>
+#include <iostream>
 
 #include "../include/bash_printer.h"
 
@@ -29,7 +30,14 @@ Field::~Field() {
 }
 
 void Field::attachTetrShape(unsigned char** tetrShape, int dim, int x, int y) {
-  // TO DO
+  for(int i = y; i < y + dim; i++) {
+    for(int j = x; j < x + dim; j++) {
+      if(tetrShape[i-y][j-x] != 0) {
+        shape[i][j] = tetrShape[i-y][j-x];
+      }
+    }
+  }
+  drawer->updateField(this);
   checkLines();
   master->createNextTetr();
 }

@@ -53,10 +53,11 @@ public:
 private:
   // Moves tetromino down or attach it to field
   void moveDown();
-  // Checks moveValidity
+  // Checks move validity
   static bool dontHasConflict(
       unsigned char** shape, Field* field, int dim, int x, int y);
-  
+  // Checks if the block is out of bounds
+  static bool outOfBounds(int x, int y, int fieldWidth, int fieldHeight);
 };
 
 #endif // TETROMINO_H_

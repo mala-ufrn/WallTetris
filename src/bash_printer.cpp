@@ -93,7 +93,7 @@ void BashPrinter::updateField(Drawable* field) {
   unsigned char** shape = field->getShape();
   for(int i = 1; i < field->getHeight(); i++) {
     for(int j = 0; j < field->getWidth(); j++) {
-      printBlock(j+1, i, shape[i][j]);
+      printBlock(j + 1, i, shape[i][j]);
     }
   }
 
@@ -119,7 +119,7 @@ void BashPrinter::updateActivePiece(Drawable* piece, int x, int y){
     for(int i = (lastX == 0)? 1 : 0; i < dimention; i++) {
       for(int j = 0; j < dimention; j++) {
         if(lastShape[i][j] != 0) {
-          printBlock(lastX + j, lastY + i, CLEAR);
+          printBlock(lastX + j + 1, lastY + i, CLEAR);
         }
       }
     }
@@ -131,7 +131,7 @@ void BashPrinter::updateActivePiece(Drawable* piece, int x, int y){
       lastShape[i][j] = shape[i][j];
 
       if(shape[i][j] != 0) {
-        printBlock(x + j, y + i, shape[i][j]);
+        printBlock(x + j + 1, y + i, shape[i][j]);
       }
     }
   }
@@ -185,7 +185,7 @@ void BashPrinter::showGameOver(){
   moveCursor(4,10);
   cout<<"GAME OVER";
   resumeCursor();
-  moveCursor(3,12);
+  moveCursor(3,11);
   cout<<"Press any key";
   resumeCursor();
 

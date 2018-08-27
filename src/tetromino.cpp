@@ -29,7 +29,7 @@ Tetromino::Tetromino(Field* field, Master* master, Drawer* drawer) {
   this->master = master;
   this->drawer = drawer;
 
-  x = 4;
+  x = 3;
   y = 0;
 
   type = Utils::randNum(TYPES); // Define type
@@ -132,15 +132,21 @@ void Tetromino::rotate() {
 bool Tetromino::dontHasConflict(
     unsigned char** shape, Field* field, int dim, int x, int y) {
   unsigned char** fShape = field->getShape();
-  int fHeight = field->getHeight();
+  int fw = field->getWidth();
+  int fh = field->getHeight();
   for(int i = 0; i < dim; i++) {
     for(int j = 0; j < dim; j++) {
-      if (shape[i][j] != 0 && (y + i >= fHeight || fShape[y+i][x+j] != 0)) {
+      if (shape[i][j] != 0 && 
+          (outOfBounds(x+j, y+i, fw, fh) || fShape[y+i][x+j] != 0)) {
         return false;
       }
     }
   }
   return true;
+}
+
+bool Tetromino::outOfBounds(int x, int y, int fieldWidth, int fieldHeight) {
+  return x < 0 || x >= fieldWidth || y >= fieldHeight;
 }
 
 unsigned char** Tetromino::getShape() {
