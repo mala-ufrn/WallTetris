@@ -54,7 +54,7 @@ void WindowPrinter::init(string player, Drawable* field) {
   glutCreateWindow("Wall Tetris");
   glutDisplayFunc(display);
   
-  height = field->getHeight()-1;
+  height = field->getHeight();
   width = 4.0;
   length = 4.0;
   matrix = std::vector<std::vector<char>>(height);
@@ -153,7 +153,7 @@ void WindowPrinter::updateField(Drawable* field) {
   unsigned char** shape = field->getShape();
   for(int i = 0; i < field->getHeight()-1; i++)
     for(int j = 0; j < field->getWidth(); j++)
-      matrix[i][j] = shape[i+1][j];
+      matrix[i][j] = shape[i][j];
 }
 
 void WindowPrinter::updateActivePiece(Drawable* piece, int y, int x){
@@ -172,18 +172,18 @@ void WindowPrinter::updateActivePiece(Drawable* piece, int y, int x){
     for(int i = 0; i < dimention; i++)
       for(int j = 0; j < dimention; j++)
         if(lastShape[i][j] != 0)
-          matrix[lastX + j + 1][lastY + i] = CLEAR;
+          matrix[lastX + i][lastY + j] = CLEAR;
 
   // draw the piece
   for(int i = 0; i < dimention; i++) {
     for(int j = 0; j < dimention; j++) {
-      if (y == 0 && i == 0) {
+      if (x == 0 && i == 0) {
         lastShape[i][j] = 0;
       } else {
         lastShape[i][j] = shape[i][j];
 
         if(shape[i][j] != 0) {
-          matrix[x + j + 1][y + i] =  shape[i][j];
+          matrix[x + i][y + j] = shape[i][j];
         }
       }
     }
@@ -207,7 +207,9 @@ void WindowPrinter::updateScore(int value) {
 }
 
 void WindowPrinter::showGameOver() {
-  return;
+  system("stty icanon echo");
+  system("clear");
+  exit(-1);
 }
 
 void WindowPrinter::showPause() {

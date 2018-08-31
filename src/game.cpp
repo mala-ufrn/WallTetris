@@ -83,7 +83,10 @@ void Game::keyboard(unsigned char key, int x, int y) {
         activeTetr->pause();
       }
       break;
-    case 'q': exit(0);
+    case 'q':
+      system("stty icanon echo");
+      system("clear");
+      exit(0);
     default:
       break;
   }
