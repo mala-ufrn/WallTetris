@@ -15,7 +15,6 @@ public:
   virtual void updateNext(Drawable* piece) = 0;
   virtual void showPause() = 0;
   virtual void showGameOver() = 0;
-  virtual void draw() = 0;
 };
 
 #endif // DRAWER_H_

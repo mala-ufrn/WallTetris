@@ -1,5 +1,10 @@
 #include "../include/game.h"
 
+bool Game::paused;
+Field* Game::field;
+Tetromino* Game::activeTetr;
+Drawer* Game::drawer;
+
 Game::Game(Drawer* drawer){
   player = "Player01";
   
@@ -52,37 +57,43 @@ void Game::createNextTetr() {
   activeTetr->init();
 }
 
+void Game::keyboard(unsigned char key, int x, int y) {
+  if (paused && key != 'p' && key != 'q') return;
+  switch(key) {
+    case 'a':
+      activeTetr->moveLeft();
+      break;
+    case 'd':
+      activeTetr->moveRight();
+      break;
+    case 'w':
+      activeTetr->rotate();
+      break;
+    case 's':
+      activeTetr->speedUp();
+      break;
+    case 'p':
+      if(paused) {
+        paused = false;
+        drawer->updateField(field);
+        activeTetr->resume();
+      } else {
+        paused = true;
+        drawer->showPause();
+        activeTetr->pause();
+      }
+      break;
+    case 'q': exit(0);
+    default:
+      break;
+  }
+}
+
 void Game::listenKeys() {
   char key;
   while(playing) {
     key = getchar();
-    switch(key) {
-      case 'a':
-        activeTetr->moveLeft();
-        break;
-      case 'd':
-        activeTetr->moveRight();
-        break;
-      case 'w':
-        activeTetr->rotate();
-        break;
-      case 's':
-        activeTetr->speedUp();
-        break;
-      case 'p':
-        if(paused) {
-          paused = false;
-          drawer->updateField(field);
-          activeTetr->resume();
-        } else {
-          paused = true;
-          drawer->showPause();
-          activeTetr->pause();
-        }
-        break;
-      default:
-        break;
-    }
+    keyboard(key,0,0);
   }
 }
 

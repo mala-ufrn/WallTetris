@@ -6,7 +6,7 @@
 #include "../include/bash_printer.h"
 
 #define FIELD_NUM_ROWS 22
-#define FIELD_NUM_COLS 10
+#define FIELD_NUM_COLS 12
 
 Field::Field(Master *master, Drawer* drawer) {
   this->master = master;

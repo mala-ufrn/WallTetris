@@ -16,19 +16,19 @@ private:
   //Flag for main loop
   bool playing;
   //Flag for pause
-  bool paused;
+  static bool paused;
   //Player name
   string player;
   //Player score
   int score;
   //Game field
-  Field* field;
+  static Field* field;
   //Next tetromino
   Tetromino* nextTetr;
   //Active tetromino
-  Tetromino* activeTetr;
+  static Tetromino* activeTetr;
   //Object that draws the game scene
-  Drawer* drawer;
+  static Drawer* drawer;
   // Thread for inputs listen
   thread controller;
 
@@ -51,6 +51,8 @@ public:
   void increaseScore(int value);
   //Finish the game
   void gameOver();
+  //
+  static void keyboard(unsigned char key, int x, int y);
 private:
   void listenKeys();
 };
