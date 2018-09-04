@@ -120,7 +120,7 @@ void BashPrinter::updateActivePiece(Drawable* piece, int x, int y){
     for(int i = 0; i < dimention; i++) {
       for(int j = 0; j < dimention; j++) {
         if(lastShape[i][j] != 0) {
-          printBlock(lastX + j + 1, lastY + i, CLEAR);
+          printBlock((lastX + j)%12 + 1, lastY + i, CLEAR);
         }
       }
     }
@@ -128,13 +128,13 @@ void BashPrinter::updateActivePiece(Drawable* piece, int x, int y){
   // draw the piece
   for(int i = 0; i < dimention; i++) {
     for(int j = 0; j < dimention; j++) {
-      if (y == 0 && i == 0) {
+      if (y == 0 && y+i == 0) {
         lastShape[i][j] = 0;
       } else {
         lastShape[i][j] = shape[i][j];
 
         if(shape[i][j] != 0) {
-          printBlock(x + j + 1, y + i, shape[i][j]);
+          printBlock((x + j)%12 + 1, y + i, shape[i][j]);
         }
       }
     }

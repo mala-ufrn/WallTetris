@@ -32,9 +32,6 @@ Tetromino::Tetromino(Field* field, Master* master, Drawer* drawer) {
   this->master = master;
   this->drawer = drawer;
 
-  x = 3;
-  y = 0;
-
   type = Utils::randNum(TYPES); // Define type
   fallVelocity = NORMAL_VEL;
 
@@ -54,7 +51,9 @@ Tetromino::~Tetromino() {
   free(shape);
 }
 
-void Tetromino::init(){
+void Tetromino::init(int face){
+  x = face * 3;
+  y = 0;
   //Draw the tetromino on start position
   drawer->updateActivePiece(this, x, y);
 
@@ -90,7 +89,8 @@ void Tetromino::resume() {
 void Tetromino::moveLeft(){
   tetrMutex.lock();
   if(dontHasConflict(shape, field, DIM, x - 1, y)) {
-    drawer->updateActivePiece(this, --x, y);
+    x = x == 0? 11 : x-1;
+    drawer->updateActivePiece(this, x, y);
   }
   tetrMutex.unlock();
 }
@@ -98,7 +98,8 @@ void Tetromino::moveLeft(){
 void Tetromino::moveRight(){
   tetrMutex.lock();
   if(dontHasConflict(shape, field, DIM, x + 1, y)) {
-    drawer->updateActivePiece(this, ++x, y);
+    x = (x+1)%12;
+    drawer->updateActivePiece(this, x, y);
   }
   tetrMutex.unlock();
 }
@@ -110,6 +111,7 @@ void Tetromino::moveDown(){
     tetrMutex.unlock();
   } else {
     field->attachTetrShape(shape, DIM, x, y);
+    master->setActiveFace(resolveActiveFace());
     tetrMutex.unlock();
     delete this;
   }
@@ -153,12 +155,10 @@ void Tetromino::rotate() {
 bool Tetromino::dontHasConflict(
     unsigned char** shape, Field* field, int dim, int x, int y) {
   unsigned char** fShape = field->getShape();
-  int fw = field->getWidth();
-  int fh = field->getHeight();
+  int fh = field->getHeight(); 
   for(int i = 0; i < dim; i++) {
     for(int j = 0; j < dim; j++) {
-      if (shape[i][j] != 0 && 
-          (outOfBounds(x+j, y+i, fw, fh) || fShape[y+i][x+j] != 0)) {
+      if (shape[i][j] != 0 && (outOfBounds(y+i, fh) || fShape[y+i][(x+j)%12] != 0)) {
         return false;
       }
     }
@@ -166,8 +166,15 @@ bool Tetromino::dontHasConflict(
   return true;
 }
 
-bool Tetromino::outOfBounds(int x, int y, int fieldWidth, int fieldHeight) {
-  return x < 0 || x >= fieldWidth || y >= fieldHeight;
+bool Tetromino::outOfBounds(int y, int fieldHeight) { 
+  return y >= fieldHeight; 
+}
+
+int Tetromino::resolveActiveFace() {
+  if (x < 3) return 0;
+  if (x < 6) return 1;
+  if (x < 9) return 2;
+  else return 3;
 }
 
 unsigned char** Tetromino::getShape() {

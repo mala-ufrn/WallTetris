@@ -51,6 +51,8 @@ void GlutDrawer::init(string player, Drawable* field) {
   //glFrustum(-1, 1, -20, 20, 1.5, 50.0);
   //glOrtho(-1, 1, -1, 1, 1.5, 50.0);
   gluPerspective(60, 1, 1.5, 80.0);
+
+  glEnable(GL_DEPTH_TEST);
   
   height = field->getHeight();
   width = 4.0;
@@ -63,12 +65,12 @@ void GlutDrawer::init(string player, Drawable* field) {
 
 void GlutDrawer::updateField(Drawable* field) {
   unsigned char** shape = field->getShape();
-  for(int i = 0; i < field->getHeight()-1; i++)
+  for(int i = 0; i < field->getHeight(); i++)
     for(int j = 0; j < field->getWidth(); j++)
       matrix[i][j] = shape[i][j];
 }
 
-void GlutDrawer::updateActivePiece(Drawable* piece, int y, int x){
+void GlutDrawer::updateActivePiece(Drawable* piece, int x, int y){
   int dimention = piece->getHeight();
   unsigned char** shape = piece->getShape();
   // initialize lastShape
@@ -84,25 +86,25 @@ void GlutDrawer::updateActivePiece(Drawable* piece, int y, int x){
     for(int i = 0; i < dimention; i++)
       for(int j = 0; j < dimention; j++)
         if(lastShape[i][j] != 0)
-          matrix[lastX + i][lastY + j] = CLEAR;
+          matrix[lastY + i][(lastX + j)%12] = CLEAR;
 
   // draw the piece
   for(int i = 0; i < dimention; i++) {
     for(int j = 0; j < dimention; j++) {
-      if (x == 0 && i == 0) {
+      if (x == 0 && y+i == 0) {
         lastShape[i][j] = 0;
       } else {
         lastShape[i][j] = shape[i][j];
 
         if(shape[i][j] != 0) {
-          matrix[x + i][y + j] = shape[i][j];
+          matrix[y + i][(x + j)%12] = shape[i][j];
         }
       }
     }
   }
 
   //update angle
-  angle = 30*y + 90;
+  angle = 30*x + 90;
 
   //Memorize last values
   lastPiece = piece;
@@ -132,7 +134,7 @@ void GlutDrawer::showPause() {
 
 void GlutDrawer::display() {
   //prints the field bounds
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();

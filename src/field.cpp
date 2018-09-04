@@ -33,7 +33,7 @@ void Field::attachTetrShape(unsigned char** tetrShape, int dim, int x, int y) {
   for(int i = y; i < y + dim; i++) {
     for(int j = x; j < x + dim; j++) {
       if(tetrShape[i-y][j-x] != 0) {
-        shape[i][j] = tetrShape[i-y][j-x];
+        shape[i][j%FIELD_NUM_COLS] = tetrShape[i-y][j-x];
       }
     }
   }
