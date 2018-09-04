@@ -46,13 +46,13 @@ void BashPrinter::init(string player, Drawable* field) {
   int height = field->getHeight(),
       width = field->getWidth();
 
-  for(int i = 1; i < height+1; i++) {
-    printBlock(0, i, NAIVE_BLUE);
-    printBlock(width+1, i, NAIVE_BLUE);
+  for(int i = 0; i < height+1; i++) {
+    printBlock(0, i, BLACK);
+    printBlock(width+1, i, BLACK);
   }
-  for(int i = 0; i < width+2; i++) {
-    printBlock(i, height, NAIVE_BLUE);
-    printBlock(i, 0, RED);
+  for(int i = 1; i < width+1; i++) {
+    printBlock(i, height, WHITE);
+    printBlock(i, 0, BLACK);
   }
 
   //prints the UI
@@ -66,11 +66,11 @@ void BashPrinter::init(string player, Drawable* field) {
 
   //score
   moveCursor(field->getWidth()+7+START_X, 1);
-  cout << "score : 0" << endl;
+  cout << "score: 0" << endl;
 
   //next tetromino label
   moveCursor(field->getWidth()+5+START_X, 1);
-  cout << "next : " << endl;
+  cout << "next: " << endl;
 
   //help text
   moveCursor(field->getWidth()+5+START_X, 5);
@@ -155,14 +155,14 @@ void BashPrinter::updateNext(Drawable* piece){
   //Clears the next area
   for(int i = 0; i < piece->getHeight(); i++) {
     for(int j = 0; j < piece->getWidth(); j++) {
-      printBlock(j+15, i+7, CLEAR);
+      printBlock(j+17, i+7, CLEAR);
     }
   }
   //Draws the new piece
   unsigned char** shape = piece->getShape();
   for(int i = 0; i < piece->getHeight(); i++) {
     for(int j = 0; j < piece->getWidth(); j++) {
-      printBlock(j+15, i+7, shape[i][j]);
+      printBlock(j+17, i+7, shape[i][j]);
     }
   }
 
@@ -174,8 +174,8 @@ void BashPrinter::updateScore(int value) {
   printerMutex.lock();
 
   saveCursor();
-  moveCursor(17, 4);
-  cout << "score : " << value;
+  moveCursor(19, 4);
+  cout << "score: " << value;
   resumeCursor();
 
   fflush(stdout);

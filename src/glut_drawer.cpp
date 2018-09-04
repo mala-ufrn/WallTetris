@@ -123,7 +123,7 @@ void GlutDrawer::updateScore(int value) {
 }
 
 void GlutDrawer::showGameOver() {
-  // TODO
+  exit(0);
   return;
 }
 
@@ -165,7 +165,7 @@ void GlutDrawer::display() {
     glTranslatef(0,drawer->height/2.0,0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(0.8, 0.8, 0.8, 0.5);
+    glColor4f(0.8, 0.8, 0.8, 0.3);
     glScalef(drawer->width,drawer->height,drawer->length);
     glutWireCube(1.0);
   glPopMatrix();
@@ -174,7 +174,7 @@ void GlutDrawer::display() {
     glTranslatef(0,drawer->height/2.0,0);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(0.8, 0.8, 0.8, 0.5);
+    glColor4f(0.8, 0.8, 0.8, 0.3);
     glScalef(drawer->width-2,drawer->height,drawer->length-2);
     glutWireCube(1.0);
   glPopMatrix();
@@ -192,8 +192,8 @@ void GlutDrawer::display() {
               glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
               setColor(colorPosition);
               glScalef(1, 1, 1);
-              glutSolidCube(1.0);
-              glColor4f(0.5, 0.5, 0.5, 1);
+              glutSolidCube(0.98);
+              glColor4f(0.7, 0.7, 0.7, 1);
               glutWireCube(1.0);
             glPopMatrix();
           }
@@ -235,14 +235,15 @@ char GlutDrawer::getColorPosition(int x, int y, int z) {
 void GlutDrawer::setColor(char color) {
   switch(color)
   {
-    case BLACK     : glColor4f(0, 0, 0, 1); break;
-    case RED       : glColor4f(1, 0, 0, 1); break;
-    case GREEN     : glColor4f(0, 1, 0, 1); break;
-    case YELLOW    : glColor4f(1, 1, 0, 1); break;
-    case NAIVE_BLUE: glColor4f(0, 0, 0.5, 1); break;
-    case PURPLE    : glColor4f(1, 0, 1, 1); break;
-    case BLUE      : glColor4f(0, 0, 1, 1); break;
-    case WHITE     : glColor4f(1, 1, 1, 1); break;
+    case BLACK     : glColor4f(0.0, 0.0, 0.0, 1.0); break;
+    case RED       : glColor4f(0.8, 0.3, 0.3, 1.0); break;
+    case GREEN     : glColor4f(0.1, 0.8, 0.1, 1.0); break;
+    case YELLOW    : glColor4f(0.9, 0.9, 0.0, 1.0); break;
+    case NAIVE_BLUE: glColor4f(0.2, 0.4, 0.9, 1.0); break;
+    case ORANGE    : glColor4f(1.0, 0.5, 0.0, 1.0); break;
+    case PURPLE    : glColor4f(0.7, 0.3, 0.8, 1.0); break;
+    case BLUE      : glColor4f(0.0, 0.7, 0.9, 1.0); break;
+    case WHITE     : glColor4f(1.0, 1.0, 1.0, 1.0); break;
     case CLEAR     : break;
     default: break;
   }
