@@ -13,24 +13,28 @@ using std::thread;
 
 class Game : public Master{
 private:
+  //Static reference to current game
+  static Game* game;
   //Flag for main loop
   bool playing;
+  //Flag for bash version
+  bool isBash;
   //Flag for pause
-  static bool paused;
+  bool paused;
   //Player name
   string player;
   //Player score
   int score;
   //Game field
-  static Field* field;
+  Field* field;
   //Next tetromino
   Tetromino* nextTetr;
   //Active tetromino
-  static Tetromino* activeTetr;
+  Tetromino* activeTetr;
   //Object that draws the game scene
-  static Drawer* drawer;
+  Drawer* drawer;
   // Thread for inputs listen
-  thread controller;
+  thread* controller;
 
 public:
   //Constructor for Games objects
@@ -40,7 +44,7 @@ public:
   //Change the player atribute
   void setPlayer(string name){player = name;};
   //Prints the start screen and instantiates the initial pieces.
-  void init();
+  void init(bool isBash=false);
   //Main loop execution method
   void update();
   //Returns true if is not game over;
@@ -51,8 +55,10 @@ public:
   void increaseScore(int value);
   //Finish the game
   void gameOver();
-  //
+  //Static function to controll the game
   static void keyboard(unsigned char key, int x, int y);
+  //Static function to access game update funcion
+  static void idleFunc();
 private:
   void listenKeys();
 };

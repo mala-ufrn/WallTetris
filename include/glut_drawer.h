@@ -1,26 +1,28 @@
-#ifndef WINDOW_PRINTER_H_
-#define WINDOW_PRINTER_H_
+#ifndef GLUT_DRAWER_H_
+#define GLUT_DRAWER_H_
 
 #include <string>
 using std::string;
-#include <mutex>
-using std::mutex;
 #include <vector>
+using std::vector;
 
 #include "drawer.h"
+#include "game.h"
 
-class WindowPrinter : public Drawer{
+class GlutDrawer : public Drawer{
 private:
+  //Static reference to current drawer
+  static GlutDrawer* drawer;
   //Height of Wall Tetris
-  static int height;
+  int height;
   //Width of Wall Tetris
-  static int width;
+  int width;
   //Length of Wall Tetris
-  static int length;
+  int length;
   //Angle of horizontal visualization
-  static float angle;
+  float angle;
   //Matrix of Wall Tetrix
-  static std::vector<std::vector<char>> matrix;
+  vector<vector<char>> matrix;
   //Piece last x
   int lastX;
   //Piece last y
@@ -31,7 +33,7 @@ private:
   Drawable* lastPiece;
 public:
   //Constructor
-  WindowPrinter();
+  GlutDrawer();
   //Prints the field border and the ui
   void init(string player, Drawable* field);
   //Updates the game field representation
@@ -46,9 +48,9 @@ public:
   void showPause();
   //Shows gameover message
   void showGameOver();
-private:
-  //
+  // 
   static void display();
+private:
   //
   static char getColorPosition(int x, int y, int z);
   //

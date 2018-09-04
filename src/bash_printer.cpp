@@ -8,7 +8,7 @@ using std::cout;
 using std::endl;
 
 #define START_X 4
-#define START_Y 0
+#define START_Y 2
 
 //Colors to printer output
 enum Color {
@@ -18,6 +18,7 @@ enum Color {
   GREEN = 103,
   YELLOW = 121,
   NAIVE_BLUE = 110,
+  ORANGE = 111,
   PURPLE = 112,
   BLUE = 98,
   WHITE = 119
@@ -217,7 +218,7 @@ void BashPrinter::SignalHandlerFunction (int sig)
   system("stty icanon echo");
   system("clear");
   fflush(stdout);
-  kill(getpid(), SIGKILL);
+  kill(getpid(), SIGTERM);
 }
 
 void BashPrinter::printBlock(int x, int y, int color) {
@@ -228,6 +229,7 @@ void BashPrinter::printBlock(int x, int y, int color) {
     case BLACK     : cout << "\033[40;30m  \033[0m"; break;
     case RED       : cout << "\033[41;31m  \033[0m"; break;
     case GREEN     : cout << "\033[42;32m  \033[0m"; break;
+    case ORANGE    :
     case YELLOW    : cout << "\033[43;33m  \033[0m"; break;
     case NAIVE_BLUE: cout << "\033[44;34m  \033[0m"; break;
     case PURPLE    : cout << "\033[45;35m  \033[0m"; break;

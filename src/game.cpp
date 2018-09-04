@@ -1,9 +1,6 @@
 #include "../include/game.h"
 
-bool Game::paused;
-Field* Game::field;
-Tetromino* Game::activeTetr;
-Drawer* Game::drawer;
+Game* Game::game;
 
 Game::Game(Drawer* drawer){
   player = "Player01";
@@ -14,11 +11,13 @@ Game::Game(Drawer* drawer){
   this->drawer = drawer;
 }
 
-void Game::init() {
+void Game::init(bool isBash) {
+  game = this;
   //Starts the score
   score = 0;
   playing = true;
   paused = false;
+  this->isBash = isBash;
   //draws the start screen;
   drawer->init(player, field);
 
@@ -26,7 +25,9 @@ void Game::init() {
   nextTetr = new Tetromino(field, this, drawer);
   createNextTetr();
 
-  controller = thread(&Game::listenKeys, this);
+  if (isBash){
+    controller = new thread(&Game::listenKeys, this);
+  }
 }
 
 void Game::update() {
@@ -47,7 +48,7 @@ void Game::increaseScore(int value) {
 void Game::gameOver(){
   playing = false;
   drawer->showGameOver();
-  controller.join();
+  controller->join();
 }
 
 void Game::createNextTetr() {
@@ -58,50 +59,55 @@ void Game::createNextTetr() {
 }
 
 void Game::keyboard(unsigned char key, int x, int y) {
-  if (paused && key != 'p' && key != 'q') return;
+  if (game->paused && key != 'p' && key != 'q') return;
   switch(key) {
     case 'a':
-      activeTetr->moveLeft();
+      game->activeTetr->moveLeft();
       break;
     case 'd':
-      activeTetr->moveRight();
+      game->activeTetr->moveRight();
       break;
     case 'w':
-      activeTetr->rotate();
+      game->activeTetr->rotate();
       break;
     case 's':
-      activeTetr->speedUp();
+      game->activeTetr->speedUp();
       break;
     case 'p':
-      if(paused) {
-        paused = false;
-        drawer->updateField(field);
-        activeTetr->resume();
+      if(game->paused) {
+        game->paused = false;
+        game->drawer->updateField(game->field);
+        game->activeTetr->resume();
       } else {
-        paused = true;
-        drawer->showPause();
-        activeTetr->pause();
+        game->paused = true;
+        game->drawer->showPause();
+        game->activeTetr->pause();
       }
       break;
     case 'q':
-      system("stty icanon echo");
-      system("clear");
-      exit(0);
+      if (!game->isBash) {
+        exit(-1);
+      }
     default:
       break;
   }
 }
 
+void Game::idleFunc(){
+  if(game->isPlaying()) {
+    game->update(); 
+  }
+}
+
 void Game::listenKeys() {
-  char key;
   while(playing) {
-    key = getchar();
-    keyboard(key,0,0);
+    keyboard(getchar(),0,0);
   }
 }
 
 Game::~Game() {
   if (nextTetr != NULL) {
+    delete controller;
     delete nextTetr;
     delete activeTetr;
     delete field;
