@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(800, 600);
+    glutInitWindowSize(584, 800);
     glutInitWindowPosition(200, 100);
     glutCreateWindow("Wall Tetris");
     glutKeyboardFunc(&Game::keyboard);

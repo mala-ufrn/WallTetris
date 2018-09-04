@@ -18,7 +18,7 @@ using std::endl;
 #define START_Y 0
 
 #define PI 3.14159265
-#define DISTANCE 22
+#define DISTANCE 17
 
 //Colors to printer output
 enum Color {
@@ -135,6 +135,7 @@ void GlutDrawer::showPause() {
 void GlutDrawer::display() {
   //prints the field bounds
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glViewport(-150, 0, 584, 800);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
