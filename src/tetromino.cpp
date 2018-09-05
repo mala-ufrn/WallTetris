@@ -5,8 +5,8 @@
 #include "../include/utils.h"
 #include "../include/bash_printer.h"
 
-#define NORMAL_VEL 1.5
-#define SPEED_UP_VEL 15
+#define NORMAL_VEL 5
+#define SPEED_UP_VEL 20
 
 mutex Tetromino::tetrMutex;
 
@@ -51,8 +51,8 @@ Tetromino::~Tetromino() {
   free(shape);
 }
 
-void Tetromino::init(int face){
-  x = face * 3;
+void Tetromino::init(int xPos){
+  x = xPos;
   y = 0;
   //Draw the tetromino on start position
   drawer->updateActivePiece(this, x, y);
@@ -111,7 +111,6 @@ void Tetromino::moveDown(){
     tetrMutex.unlock();
   } else {
     field->attachTetrShape(shape, DIM, x, y);
-    master->setActiveFace(resolveActiveFace());
     tetrMutex.unlock();
     delete this;
   }
@@ -168,13 +167,6 @@ bool Tetromino::dontHasConflict(
 
 bool Tetromino::outOfBounds(int y, int fieldHeight) { 
   return y >= fieldHeight; 
-}
-
-int Tetromino::resolveActiveFace() {
-  if (x < 3) return 0;
-  if (x < 6) return 1;
-  if (x < 9) return 2;
-  else return 3;
 }
 
 unsigned char** Tetromino::getShape() {

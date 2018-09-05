@@ -4,8 +4,7 @@
 class Master{
 public:
   virtual void increaseScore(int value) = 0;
-  virtual void createNextTetr() = 0;
-  virtual void setActiveFace(int face) = 0;
+  virtual void createNextTetr(int x) = 0;
   virtual void gameOver() = 0;
 };
 

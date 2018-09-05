@@ -5,7 +5,7 @@
 
 #include "../include/bash_printer.h"
 
-#define FIELD_NUM_ROWS 17
+#define FIELD_NUM_ROWS 19
 #define FIELD_NUM_COLS 12
 
 Field::Field(Master *master, Drawer* drawer) {
@@ -39,7 +39,7 @@ void Field::attachTetrShape(unsigned char** tetrShape, int dim, int x, int y) {
   }
   drawer->updateField(this);
   checkLines();
-  master->createNextTetr();
+  master->createNextTetr(x);
 }
 
 void Field::checkLines() {

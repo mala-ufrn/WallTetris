@@ -34,7 +34,7 @@ public:
   // Tetromino object constructor;
   ~Tetromino();
   // Prints tetromino and checks the entry
-  void init(int face);
+  void init(int xPos);
   // Stores the clock info
   void pause();
   // Uses clock info to recalculate the fall behavior and draw tetromino
@@ -59,8 +59,6 @@ private:
   // Moves tetromino down or attach it to field
   void moveDown();
   // Computes the active face Check
-  int resolveActiveFace();
-  // Checks if the block is out of bounds 
   static bool outOfBounds(int y, int fieldHeight); 
   // Checks move validity
   static bool dontHasConflict(

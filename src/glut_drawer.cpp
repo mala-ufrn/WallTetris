@@ -18,7 +18,7 @@ using std::endl;
 #define START_Y 0
 
 #define PI 3.14159265
-#define DISTANCE 17
+#define DISTANCE 22
 
 //Colors to printer output
 enum Color {
@@ -91,7 +91,7 @@ void GlutDrawer::updateActivePiece(Drawable* piece, int x, int y){
   // draw the piece
   for(int i = 0; i < dimention; i++) {
     for(int j = 0; j < dimention; j++) {
-      if (x == 0 && y+i == 0) {
+      if (y+i == 0) {
         lastShape[i][j] = 0;
       } else {
         lastShape[i][j] = shape[i][j];
@@ -135,7 +135,7 @@ void GlutDrawer::showPause() {
 void GlutDrawer::display() {
   //prints the field bounds
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glViewport(-150, 0, 584, 800);
+  glViewport(-150, 0, 800, 600);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -145,42 +145,7 @@ void GlutDrawer::display() {
   gluLookAt(x, 13, z, 0, 9, 0, 0, 1, 0);
   //gluLookAt(x, y, z, 0, height_size/2, height_size/2, 0, 1, 0);
 
-  glPushMatrix();
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(0.5, 0.5, 0.5, 0.5);
-    glScalef(drawer->width,0,drawer->length);
-    glutSolidCube(1.0);
-  glPopMatrix();
-
-  glPushMatrix();
-    glTranslatef(0,drawer->height,0);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(1, 0.75, 0.8, 0.5);
-    glScalef(drawer->width,0,drawer->length);
-    glutSolidCube(1.0);
-  glPopMatrix();
-
-  glPushMatrix();
-    glTranslatef(0,drawer->height/2.0,0);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(0.8, 0.8, 0.8, 0.3);
-    glScalef(drawer->width,drawer->height,drawer->length);
-    glutWireCube(1.0);
-  glPopMatrix();
-
-  glPushMatrix();
-    glTranslatef(0,drawer->height/2.0,0);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(0.8, 0.8, 0.8, 0.3);
-    glScalef(drawer->width-2,drawer->height,drawer->length-2);
-    glutWireCube(1.0);
-  glPopMatrix();
-
-  //draws the game
+  //draws the field and active tetromino
   for(int i = 0; i < drawer->width; i++){
     for(int j = 0; j < drawer->height; j++){
       for (int z = 0; z < drawer->length; z++){
@@ -194,7 +159,7 @@ void GlutDrawer::display() {
               setColor(colorPosition);
               glScalef(1, 1, 1);
               glutSolidCube(0.98);
-              glColor4f(0.7, 0.7, 0.7, 1);
+              glColor4f(0.0, 0.0, 0.0, 1);
               glutWireCube(1.0);
             glPopMatrix();
           }
@@ -202,6 +167,43 @@ void GlutDrawer::display() {
       }
     }
   }
+
+  glPushMatrix();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(0.5, 0.5, 0.5, 0.5);
+    glScalef(drawer->width,0,drawer->length);
+    glutSolidCube(1.0);
+  glPopMatrix();
+
+  glPushMatrix();
+    glTranslatef(0,drawer->height-1,0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(1, 0.75, 0.8, 0.5);
+    glScalef(drawer->width,0,drawer->length);
+    glutSolidCube(1.0);
+  glPopMatrix();
+
+  glPushMatrix();
+    glTranslatef(0,drawer->height/2.0,0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(0.8, 0.8, 0.8, 0.3);
+    glTranslatef(0,-0.5,0);
+    glScalef(drawer->width,drawer->height-1,drawer->length);
+    glutWireCube(1.0);
+  glPopMatrix();
+
+  glPushMatrix();
+    glTranslatef(0,drawer->height/2.0,0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(0.5, 0.5, 0.5, 0.3);
+    glTranslatef(0,-0.5,0);
+    glScalef(drawer->width-2,drawer->height-1,drawer->length-2);
+    glutSolidCube(1.0);
+  glPopMatrix();
 
   //prints the UI
   //TODO

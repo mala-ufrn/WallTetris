@@ -25,8 +25,6 @@ private:
   string player;
   //Player score
   int score;
-  //Face in front
-  int activeFace;
   //Game field
   Field* field;
   //Next tetromino
@@ -52,11 +50,9 @@ public:
   //Returns true if is not game over;
   bool isPlaying();
   //create and show next tetromino
-  void createNextTetr();
+  void createNextTetr(int x);
   //Update and show score increased by parameter value
   void increaseScore(int value);
-  //Sets the wall active face
-  void setActiveFace(int face);
   //Finish the game
   void gameOver();
   //Static function to controll the game
