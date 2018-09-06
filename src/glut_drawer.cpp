@@ -47,12 +47,10 @@ void GlutDrawer::init(string player, Drawable* field) {
   drawer = this;
   glClearColor(0.3, 0.3, 0.3, 0.0);
 
-  glMatrixMode(GL_PROJECTION);
-  //glFrustum(-1, 1, -20, 20, 1.5, 50.0);
-  //glOrtho(-1, 1, -1, 1, 1.5, 50.0);
-  gluPerspective(60, 1, 1.5, 80.0);
-
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+              
   
   height = field->getHeight();
   width = 4.0;
@@ -135,7 +133,15 @@ void GlutDrawer::showPause() {
 void GlutDrawer::display() {
   //prints the field bounds
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glViewport(-150, 0, 800, 600);
+  glViewport(100, 0, 300, 600);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(60, 0.5, 1.5, 80.0);
+
+  /*glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  //set the world limits coordenates
+  gluOrtho(-40.0, 40.0, -30.0, 30.0);*/
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -143,9 +149,8 @@ void GlutDrawer::display() {
   float x = sin(drawer->angle*PI/180)*DISTANCE;
   float z = cos(drawer->angle*PI/180)*DISTANCE;
   gluLookAt(x, 13, z, 0, 9, 0, 0, 1, 0);
-  //gluLookAt(x, y, z, 0, height_size/2, height_size/2, 0, 1, 0);
 
-  //draws the field and active tetromino
+  //draws the field and active tetrominoes
   for(int i = 0; i < drawer->width; i++){
     for(int j = 0; j < drawer->height; j++){
       for (int z = 0; z < drawer->length; z++){
@@ -154,8 +159,6 @@ void GlutDrawer::display() {
           if (colorPosition != CLEAR){
             glPushMatrix();
               glTranslatef(drawer->width-z-2.5,drawer->height-j-0.5,drawer->length-i-2.5);
-              glEnable(GL_BLEND);
-              glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
               setColor(colorPosition);
               glScalef(1, 1, 1);
               glutSolidCube(0.98);
@@ -168,9 +171,8 @@ void GlutDrawer::display() {
     }
   }
 
+  //draws the field shape
   glPushMatrix();
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0.5, 0.5, 0.5, 0.5);
     glScalef(drawer->width,0,drawer->length);
     glutSolidCube(1.0);
@@ -178,8 +180,6 @@ void GlutDrawer::display() {
 
   glPushMatrix();
     glTranslatef(0,drawer->height-1,0);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(1, 0.75, 0.8, 0.5);
     glScalef(drawer->width,0,drawer->length);
     glutSolidCube(1.0);
@@ -187,8 +187,6 @@ void GlutDrawer::display() {
 
   glPushMatrix();
     glTranslatef(0,drawer->height/2.0,0);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0.8, 0.8, 0.8, 0.3);
     glTranslatef(0,-0.5,0);
     glScalef(drawer->width,drawer->height-1,drawer->length);
@@ -197,8 +195,6 @@ void GlutDrawer::display() {
 
   glPushMatrix();
     glTranslatef(0,drawer->height/2.0,0);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0.5, 0.5, 0.5, 0.3);
     glTranslatef(0,-0.5,0);
     glScalef(drawer->width-2,drawer->height-1,drawer->length-2);
