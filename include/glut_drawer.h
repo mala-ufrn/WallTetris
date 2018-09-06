@@ -21,8 +21,14 @@ private:
   int length;
   //Angle of horizontal visualization
   float angle;
+  //Player name
+  char playerLabel[60];
+  //Player score
+  char scoreLabel[20];
   //Matrix of Wall Tetrix
-  vector<vector<char>> matrix;
+  vector<vector<char>> fieldMatrix;
+  //Matrix of Next Tetromino
+  char next[4][4];
   //Piece last x
   int lastX;
   //Piece last y
