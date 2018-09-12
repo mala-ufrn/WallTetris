@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
     glutCreateWindow("Wall Tetris");
     glutKeyboardFunc(&Game::keyboard);
     glutDisplayFunc(&GlutDrawer::display);
+    glutTimerFunc(1, &GlutDrawer::timer, 0);
     glutIdleFunc([]() { 
       Game::idleFunc();
       glutPostRedisplay(); 

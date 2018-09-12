@@ -56,6 +56,8 @@ public:
   void showGameOver();
   // 
   static void display();
+  //
+  static void timer(int value);
 private:
   //
   static char getColorPosition(int x, int y, int z);

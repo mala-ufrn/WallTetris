@@ -39,6 +39,7 @@ GlutDrawer::GlutDrawer() {
   lastX = lastY = 0;
   lastShape = NULL;
   lastPiece = NULL;
+  angle = 90;
 }
 
 
@@ -103,7 +104,7 @@ void GlutDrawer::updateActivePiece(Drawable* piece, int x, int y){
   }
 
   //update angle
-  angle = 30*x + 90;
+  //angle = 30*x + 90;
 
   //Memorize last values
   lastPiece = piece;
@@ -369,4 +370,23 @@ void GlutDrawer::setColor(char color) {
     case CLEAR     : break;
     default: break;
   }
+}
+
+void GlutDrawer::timer(int value) {
+  int camMove = 30, maxCamMove = 360/camMove + 1;
+  int angle2 = ((int)drawer->lastX * camMove + 90) % 360;
+  drawer->angle = (value + (int)drawer->angle) % 360;
+  drawer->angle = drawer->angle < 0 ? 360 + drawer->angle : drawer->angle;
+  int signal = (abs(angle2 - drawer->angle) <= 180) ? 1 : -1;
+  int velocity = signal == 1 ? abs(angle2 - drawer->angle)/camMove + 1: maxCamMove - abs(angle2 - drawer->angle)/camMove;
+  if(angle2 < drawer->angle)
+    value = -2*signal*velocity;
+  else if(angle2 > drawer->angle)
+    value = 2*signal*velocity;
+  else
+    value = 0;
+  printf("%d %d\n", velocity, signal);
+  
+  glutPostRedisplay();
+  glutTimerFunc(1,timer, value);
 }
