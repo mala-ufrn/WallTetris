@@ -13,6 +13,8 @@ using std::endl;
 #include <string>
 using std::to_string;
 
+#define FPS 120
+
 #define START_X 4
 #define START_Y 0
 
@@ -34,6 +36,8 @@ enum Color {
 };
 
 GlutDrawer* GlutDrawer::drawer;
+
+const int GlutDrawer::CAMERA_REFRESH_MSEC = 1 * 1000 / FPS;
 
 GlutDrawer::GlutDrawer() {
   lastX = lastY = 0;
@@ -379,14 +383,14 @@ void GlutDrawer::timer(int value) {
   drawer->angle = drawer->angle < 0 ? 360 + drawer->angle : drawer->angle;
   int signal = (abs(angle2 - drawer->angle) <= 180) ? 1 : -1;
   int velocity = signal == 1 ? abs(angle2 - drawer->angle)/camMove + 1: maxCamMove - abs(angle2 - drawer->angle)/camMove;
+
   if(angle2 < drawer->angle)
     value = -2*signal*velocity;
   else if(angle2 > drawer->angle)
     value = 2*signal*velocity;
   else
     value = 0;
-  printf("%d %d\n", velocity, signal);
   
   glutPostRedisplay();
-  glutTimerFunc(1,timer, value);
+  glutTimerFunc(CAMERA_REFRESH_MSEC ,timer, value);
 }

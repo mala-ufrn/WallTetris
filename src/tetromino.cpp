@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 #include "../include/utils.h"
-#include "../include/bash_printer.h"
 
 #define NORMAL_VEL 5
 #define SPEED_UP_VEL 25

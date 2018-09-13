@@ -17,8 +17,6 @@ private:
   static Game* game;
   //Flag for main loop
   bool playing;
-  //Flag for bash version
-  bool isBash;
   //Flag for pause
   bool paused;
   //Player name
@@ -33,8 +31,6 @@ private:
   Tetromino* activeTetr;
   //Object that draws the game scene
   Drawer* drawer;
-  // Thread for inputs listen
-  thread* controller;
 
 public:
   //Constructor for Games objects
@@ -44,7 +40,7 @@ public:
   //Change the player atribute
   void setPlayer(string name){player = name;};
   //Prints the start screen and instantiates the initial pieces.
-  void init(bool isBash=false);
+  void init();
   //Main loop execution method
   void update();
   //Returns true if is not game over;

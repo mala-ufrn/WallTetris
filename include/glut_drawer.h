@@ -10,6 +10,8 @@ using std::vector;
 #include "game.h"
 
 class GlutDrawer : public Drawer{
+public:
+  static const int CAMERA_REFRESH_MSEC;
 private:
   //Static reference to current drawer
   static GlutDrawer* drawer;

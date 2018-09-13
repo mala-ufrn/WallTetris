@@ -11,23 +11,18 @@ Game::Game(Drawer* drawer){
   this->drawer = drawer;
 }
 
-void Game::init(bool isBash) {
+void Game::init() {
   game = this;
   //Starts the score
   score = 0;
   playing = true;
   paused = false;
-  this->isBash = isBash;
   //draws the start screen;
   drawer->init(player, field);
 
   //initialize the tetrominoes
   nextTetr = new Tetromino(field, this, drawer);
   createNextTetr(0);
-
-  if (isBash){
-    controller = new thread(&Game::listenKeys, this);
-  }
 }
 
 void Game::update() {
@@ -48,7 +43,6 @@ void Game::increaseScore(int value) {
 void Game::gameOver(){
   playing = false;
   drawer->showGameOver();
-  controller->join();
 }
 
 void Game::createNextTetr(int x) {
@@ -85,9 +79,7 @@ void Game::keyboard(unsigned char key, int x, int y) {
       }
       break;
     case 'q':
-      if (!game->isBash) {
         exit(-1);
-      }
     default:
       break;
   }
@@ -107,7 +99,6 @@ void Game::listenKeys() {
 
 Game::~Game() {
   if (nextTetr != NULL) {
-    delete controller;
     delete nextTetr;
     delete activeTetr;
     delete field;

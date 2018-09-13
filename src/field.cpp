@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <iostream>
 
-#include "../include/bash_printer.h"
-
 #define FIELD_NUM_ROWS 19
 #define FIELD_NUM_COLS 12
 
