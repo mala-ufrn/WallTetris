@@ -4,9 +4,6 @@
 
 #include "../include/utils.h"
 
-#define NORMAL_VEL 5
-#define SPEED_UP_VEL 25
-
 mutex Tetromino::tetrMutex;
 
 const unsigned char Tetromino::SHAPES[TYPES][DIM][DIM] = {
@@ -32,7 +29,6 @@ Tetromino::Tetromino(Field* field, Master* master, Drawer* drawer) {
   this->drawer = drawer;
 
   type = Utils::randNum(TYPES); // Define type
-  fallVelocity = NORMAL_VEL;
 
   shape = (unsigned char**)malloc(DIM * sizeof(unsigned char*));
   for (int i = 0; i < DIM; ++i) {
@@ -63,17 +59,6 @@ void Tetromino::init(int xPos){
   
   // Stores the clock measure
   clockCheckPoint = clock();
-}
-
-void Tetromino::update() {
-
-  float elapsedTime = 
-      ((float)(clock() - clockCheckPoint)) / CLOCKS_PER_SEC;
-  if (elapsedTime >= 1 / fallVelocity) {
-    moveDown();
-    clockCheckPoint = clock();
-    fallVelocity = NORMAL_VEL;
-  }
 }
 
 void Tetromino::pause() {
@@ -113,10 +98,6 @@ void Tetromino::moveDown(){
     tetrMutex.unlock();
     delete this;
   }
-}
-
-void Tetromino::speedUp(){
-  fallVelocity = SPEED_UP_VEL;
 }
 
 void Tetromino::rotate() {

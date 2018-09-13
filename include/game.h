@@ -12,9 +12,16 @@ using std::thread;
 #include "drawer.h"
 
 class Game : public Master{
+public:
+  //Update standard refresh time (ms)
+  static const int STD_UPDATE_MSEC;
 private:
   //Static reference to current game
   static Game* game;
+  //Update current refresh time (ms)
+  static bool speedUp;
+  //
+  static int upTimerThreadNum;
   //Flag for main loop
   bool playing;
   //Flag for pause
@@ -53,8 +60,10 @@ public:
   void gameOver();
   //Static function to controll the game
   static void keyboard(unsigned char key, int x, int y);
+  //
+  static void keyboardUp(unsigned char key, int x, int y);
   //Static function to access game update funcion
-  static void idleFunc();
+  static void idleFunc(int value);
 private:
   void listenKeys();
 };

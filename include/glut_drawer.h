@@ -11,6 +11,7 @@ using std::vector;
 
 class GlutDrawer : public Drawer{
 public:
+  // camera roll refresh time (ms)
   static const int CAMERA_REFRESH_MSEC;
 private:
   //Static reference to current drawer
@@ -59,7 +60,7 @@ public:
   // 
   static void display();
   //
-  static void timer(int value);
+  static void rollCamera(int value);
 private:
   //
   static char getColorPosition(int x, int y, int z);

@@ -22,8 +22,6 @@ private:
   unsigned char **shape;
   clock_t clockCheckPoint;
   clock_t pauseOffSet;
-  // Velocity in blocks/s
-  float fallVelocity;
   Field *field;
   Master *master;
   Drawer* drawer;
@@ -39,14 +37,12 @@ public:
   void pause();
   // Uses clock info to recalculate the fall behavior and draw tetromino
   void resume();
-  // Executes the automatic behaviour
-  void update();
   // Moves tetromino left if possible
   void moveLeft();
   // Moves tetromino right if possible
   void moveRight();
-  // Speeds up tretomino fall
-  void speedUp();
+  // Moves tetromino down or attach it to field
+  void moveDown();
   // Rotates the tretomino
   void rotate();
   // Returns the tretomino shape by reference
@@ -56,8 +52,6 @@ public:
   // Returns tretomino's mumber of rows
   int getHeight();
 private:
-  // Moves tetromino down or attach it to field
-  void moveDown();
   // Computes the active face Check
   static bool outOfBounds(int y, int fieldHeight); 
   // Checks move validity

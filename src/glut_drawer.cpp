@@ -376,7 +376,7 @@ void GlutDrawer::setColor(char color) {
   }
 }
 
-void GlutDrawer::timer(int value) {
+void GlutDrawer::rollCamera(int value) {
   int camMove = 30, maxCamMove = 360/camMove + 1;
   int angle2 = ((int)drawer->lastX * camMove + 90) % 360;
   drawer->angle = (value + (int)drawer->angle) % 360;
@@ -392,5 +392,5 @@ void GlutDrawer::timer(int value) {
     value = 0;
   
   glutPostRedisplay();
-  glutTimerFunc(CAMERA_REFRESH_MSEC ,timer, value);
+  glutTimerFunc(CAMERA_REFRESH_MSEC ,rollCamera, value);
 }

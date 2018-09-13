@@ -1,6 +1,13 @@
 #include "../include/game.h"
 
+#include <GL/glut.h>
+
 Game* Game::game;
+
+const int Game::STD_UPDATE_MSEC = 4 * 1000 / 7; // 7 blocks per 4 seconds
+
+bool Game::speedUp = false;
+int Game::upTimerThreadNum = 0;
 
 Game::Game(Drawer* drawer){
   player = "Player01";
@@ -27,7 +34,7 @@ void Game::init() {
 
 void Game::update() {
   if(!paused) {
-    activeTetr->update();
+    activeTetr->moveDown();
   }
 }
 
@@ -65,7 +72,9 @@ void Game::keyboard(unsigned char key, int x, int y) {
       game->activeTetr->rotate();
       break;
     case 's':
-      game->activeTetr->speedUp();
+      speedUp = true;
+      glutIgnoreKeyRepeat(1);
+      glutTimerFunc(1 ,idleFunc, ++upTimerThreadNum);
       break;
     case 'p':
       if(game->paused) {
@@ -85,9 +94,24 @@ void Game::keyboard(unsigned char key, int x, int y) {
   }
 }
 
-void Game::idleFunc(){
+void Game::keyboardUp(unsigned char key, int x, int y) {
+  switch(key) {
+    case 's':
+      speedUp = false;
+      glutIgnoreKeyRepeat(0);
+      glutTimerFunc(STD_UPDATE_MSEC / 5 ,idleFunc, ++upTimerThreadNum);
+    default:
+      break;
+  }
+}
+
+void Game::idleFunc(int value){
   if(game->isPlaying()) {
-    game->update(); 
+    if (value == upTimerThreadNum){
+      game->update();
+      int refreshTime = speedUp? STD_UPDATE_MSEC / 10 : STD_UPDATE_MSEC;
+      glutTimerFunc(refreshTime ,idleFunc, value);
+    }
   }
 }
 

@@ -17,10 +17,11 @@ int main(int argc, char *argv[]) {
   glutInitWindowPosition(200, 100);
   glutCreateWindow("Wall Tetris");
   glutKeyboardFunc(&Game::keyboard);
+  glutKeyboardUpFunc(&Game::keyboardUp);
   glutDisplayFunc(&GlutDrawer::display);
-  glutTimerFunc(GlutDrawer::CAMERA_REFRESH_MSEC, &GlutDrawer::timer, 0);
+  glutTimerFunc(GlutDrawer::CAMERA_REFRESH_MSEC, &GlutDrawer::rollCamera, 0);
+  glutTimerFunc(Game::STD_UPDATE_MSEC ,&Game::idleFunc, 0);
   glutIdleFunc([]() { 
-    Game::idleFunc();
     glutPostRedisplay(); 
   });
 
