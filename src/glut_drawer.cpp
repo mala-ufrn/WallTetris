@@ -2,21 +2,12 @@
 
 #include <GL/glut.h>
 #include <GL/glu.h>
-#include <stdio.h>
-#include <time.h>
 #include <math.h>
 #include <string.h>
-#include <vector>
-#include <iostream>
-using std::cout;
-using std::endl;
 #include <string>
 using std::to_string;
 
 #define FPS 120
-
-#define START_X 4
-#define START_Y 0
 
 #define PI 3.14159265
 #define DISTANCE 22
@@ -37,7 +28,7 @@ enum Color {
 
 GlutDrawer* GlutDrawer::drawer;
 
-const int GlutDrawer::CAMERA_REFRESH_MSEC = 1 * 1000 / FPS;
+const int GlutDrawer::CAMERA_REFRESH_MSEC = 1000 / FPS;
 
 GlutDrawer::GlutDrawer() {
   lastX = lastY = 0;
@@ -61,9 +52,9 @@ void GlutDrawer::init(string player, Drawable* field) {
   height = field->getHeight();
   width = 4.0;
   length = 4.0;
-  fieldMatrix = std::vector<std::vector<char>>(height);
+  fieldMatrix = vector<vector<char>>(height);
   for (int i = 0; i < height; ++i) {
-    fieldMatrix[i] = std::vector<char>(width*2 +length*2 - 4, CLEAR);
+    fieldMatrix[i] = vector<char>(width*2 +length*2 - 4/*corners*/, CLEAR);
   }
 }
 
@@ -77,6 +68,7 @@ void GlutDrawer::updateField(Drawable* field) {
 void GlutDrawer::updateActivePiece(Drawable* piece, int x, int y){
   int dimention = piece->getHeight();
   unsigned char** shape = piece->getShape();
+
   // initialize lastShape
   if(lastShape == NULL){
     lastShape = (unsigned char**)malloc(dimention * sizeof(unsigned char*));
@@ -106,9 +98,6 @@ void GlutDrawer::updateActivePiece(Drawable* piece, int x, int y){
       }
     }
   }
-
-  //update angle
-  //angle = 30*x + 90;
 
   //Memorize last values
   lastPiece = piece;
@@ -166,7 +155,9 @@ void GlutDrawer::display() {
           char colorPosition = getColorPosition(i,j,z);
           if (colorPosition != CLEAR){
             glPushMatrix();
-              glTranslatef(drawer->width-z-2.5,drawer->height-j-0.5,drawer->length-i-2.5);
+              glTranslatef(drawer->width-z-2.5,
+                           drawer->height-j-0.5,
+                           drawer->length-i-2.5);
               setColor(colorPosition);
               glScalef(1, 1, 1);
               glutSolidCube(0.98);
@@ -382,7 +373,9 @@ void GlutDrawer::rollCamera(int value) {
   drawer->angle = (value + (int)drawer->angle) % 360;
   drawer->angle = drawer->angle < 0 ? 360 + drawer->angle : drawer->angle;
   int signal = (abs(angle2 - drawer->angle) <= 180) ? 1 : -1;
-  int velocity = signal == 1 ? abs(angle2 - drawer->angle)/camMove + 1: maxCamMove - abs(angle2 - drawer->angle)/camMove;
+  int velocity = signal == 1 ? 
+                 abs(angle2 - drawer->angle)/camMove + 1
+                 : maxCamMove - abs(angle2 - drawer->angle)/camMove;
 
   if(angle2 < drawer->angle)
     value = -2*signal*velocity;

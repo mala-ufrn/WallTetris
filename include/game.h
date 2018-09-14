@@ -3,8 +3,6 @@
 
 #include <string>
 using std::string;
-#include <thread>
-using std::thread;
 
 #include "master.h"
 #include "tetromino.h"
@@ -21,7 +19,7 @@ private:
   //Update current refresh time (ms)
   static bool speedUp;
   //
-  static int upTimerThreadNum;
+  static int currentChainNum;
   //Flag for main loop
   bool playing;
   //Flag for pause
@@ -63,8 +61,6 @@ public:
   //
   static void keyboardUp(unsigned char key, int x, int y);
   //Static function to access game update funcion
-  static void idleFunc(int value);
-private:
-  void listenKeys();
+  static void idleFunc(int funcChainNum);
 };
 #endif // GAME_DATA_H_

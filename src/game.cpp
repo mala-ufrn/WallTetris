@@ -4,10 +4,10 @@
 
 Game* Game::game;
 
-const int Game::STD_UPDATE_MSEC = 4 * 1000 / 7; // 7 blocks per 4 seconds
+const int Game::STD_UPDATE_MSEC = 2 * 1000 / 3; // 3 blocks per 2 seconds
 
 bool Game::speedUp = false;
-int Game::upTimerThreadNum = 0;
+int Game::currentChainNum = 0;
 
 Game::Game(Drawer* drawer){
   player = "Player01";
@@ -74,7 +74,7 @@ void Game::keyboard(unsigned char key, int x, int y) {
     case 's':
       speedUp = true;
       glutIgnoreKeyRepeat(1);
-      glutTimerFunc(1 ,idleFunc, ++upTimerThreadNum);
+      glutTimerFunc(1 ,idleFunc, ++currentChainNum);
       break;
     case 'p':
       if(game->paused) {
@@ -99,25 +99,19 @@ void Game::keyboardUp(unsigned char key, int x, int y) {
     case 's':
       speedUp = false;
       glutIgnoreKeyRepeat(0);
-      glutTimerFunc(STD_UPDATE_MSEC / 5 ,idleFunc, ++upTimerThreadNum);
+      glutTimerFunc(STD_UPDATE_MSEC / 5 ,idleFunc, ++currentChainNum);
     default:
       break;
   }
 }
 
-void Game::idleFunc(int value){
+void Game::idleFunc(int funcChainNum){
   if(game->isPlaying()) {
-    if (value == upTimerThreadNum){
+    if (funcChainNum == currentChainNum){
       game->update();
       int refreshTime = speedUp? STD_UPDATE_MSEC / 10 : STD_UPDATE_MSEC;
-      glutTimerFunc(refreshTime ,idleFunc, value);
+      glutTimerFunc(refreshTime ,idleFunc, funcChainNum);
     }
-  }
-}
-
-void Game::listenKeys() {
-  while(playing) {
-    keyboard(getchar(),0,0);
   }
 }
 

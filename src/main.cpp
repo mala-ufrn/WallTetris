@@ -24,8 +24,8 @@ int main(int argc, char *argv[]) {
   glutIdleFunc([]() { 
     glutPostRedisplay(); 
   });
-
   game->init();
+  
   glutMainLoop();
 
   delete game;
