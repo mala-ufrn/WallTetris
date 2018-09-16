@@ -23,7 +23,7 @@ private:
   //Length of Wall Tetris
   int length;
   //Angle of horizontal visualization
-  float angle;
+  float horAngle;
   //Player name
   char playerLabel[60];
   //Player score

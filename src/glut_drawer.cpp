@@ -10,7 +10,9 @@ using std::to_string;
 #define FPS 120
 
 #define PI 3.14159265
-#define DISTANCE 22
+#define DISTANCE 23
+
+#define VER_ANGLE 30
 
 //Colors to printer output
 enum Color {
@@ -34,7 +36,7 @@ GlutDrawer::GlutDrawer() {
   lastX = lastY = 0;
   lastShape = NULL;
   lastPiece = NULL;
-  angle = 90;
+  horAngle = 90;
 }
 
 
@@ -143,9 +145,10 @@ void GlutDrawer::display() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  float x = sin(drawer->angle*PI/180)*DISTANCE;
-  float z = cos(drawer->angle*PI/180)*DISTANCE;
-  gluLookAt(x, 13, z, 0, 9, 0, 0, 1, 0);
+  float x = sin(drawer->horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
+  float y = sin(VER_ANGLE * PI / 180.0) * DISTANCE;
+  float z = cos(drawer->horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
+  gluLookAt(x, y, z, 0, 9, 0, 0, 1, 0);
 
   //draws the field and active tetrominoes
   for(int i = 0; i < drawer->width; i++){
@@ -229,7 +232,7 @@ void GlutDrawer::display() {
   glViewport(400, 0, 300, 600);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, 10, -17, 3, -1, 1);
+  gluOrtho2D(0, 10, -17, 3);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -369,17 +372,17 @@ void GlutDrawer::setColor(char color) {
 
 void GlutDrawer::rollCamera(int value) {
   int camMove = 30, maxCamMove = 360/camMove + 1;
-  int angle2 = ((int)drawer->lastX * camMove + 90) % 360;
-  drawer->angle = (value + (int)drawer->angle) % 360;
-  drawer->angle = drawer->angle < 0 ? 360 + drawer->angle : drawer->angle;
-  int signal = (abs(angle2 - drawer->angle) <= 180) ? 1 : -1;
+  int targetAngle = ((int)drawer->lastX * camMove + 90) % 360;
+  drawer->horAngle = (value + (int)drawer->horAngle) % 360;
+  drawer->horAngle = drawer->horAngle < 0 ? 360 + drawer->horAngle : drawer->horAngle;
+  int signal = (abs(targetAngle - drawer->horAngle) <= 180) ? 1 : -1;
   int velocity = signal == 1 ? 
-                 abs(angle2 - drawer->angle)/camMove + 1
-                 : maxCamMove - abs(angle2 - drawer->angle)/camMove;
+                 abs(targetAngle - drawer->horAngle)/camMove + 1
+                 : maxCamMove - abs(targetAngle - drawer->horAngle)/camMove;
 
-  if(angle2 < drawer->angle)
+  if(targetAngle < drawer->horAngle)
     value = -2*signal*velocity;
-  else if(angle2 > drawer->angle)
+  else if(targetAngle > drawer->horAngle)
     value = 2*signal*velocity;
   else
     value = 0;
