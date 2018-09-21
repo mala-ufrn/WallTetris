@@ -11,10 +11,9 @@ int Game::currentChainNum = 0;
 
 Game::Game(Drawer* drawer){
   player = "Player01";
-  
-  field = new Field(this, drawer);
   nextTetr = NULL;
   activeTetr = NULL;
+  field = NULL;
   this->drawer = drawer;
 }
 
@@ -24,6 +23,13 @@ void Game::init() {
   score = 0;
   playing = true;
   paused = false;
+
+  if(field != NULL) {
+    delete field;
+    delete nextTetr;
+  } 
+  field = new Field(this, drawer);
+  
   //draws the start screen;
   drawer->init(player, field);
 
@@ -83,9 +89,9 @@ void Game::keyboard(unsigned char key, int x, int y) {
         game->activeTetr->resume();
       } else {
         game->paused = true;
-        game->drawer->showPause();
         game->activeTetr->pause();
       }
+      game->drawer->switchPause(game->paused);
       break;
     case 'q':
         exit(-1);

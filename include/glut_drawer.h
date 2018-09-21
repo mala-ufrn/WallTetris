@@ -40,6 +40,10 @@ private:
   unsigned char** lastShape;
   //active piece reference
   Drawable* lastPiece;
+  //
+  bool paused;
+  //
+  bool finished;
 public:
   //Constructor
   GlutDrawer();
@@ -54,7 +58,7 @@ public:
   //Updates the score shown on UI
   void updateScore(int value);
   //Shows pause message
-  void showPause();
+  void switchPause(bool paused);
   //Shows gameover message
   void showGameOver();
   // 

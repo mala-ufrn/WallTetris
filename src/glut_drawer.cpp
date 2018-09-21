@@ -42,6 +42,8 @@ GlutDrawer::GlutDrawer() {
 
 void GlutDrawer::init(string player, Drawable* field) {
   drawer = this;
+  finished = false;
+  paused = false;
   glClearColor(0.3, 0.3, 0.3, 0.0);
 
   glEnable(GL_DEPTH_TEST);
@@ -50,7 +52,7 @@ void GlutDrawer::init(string player, Drawable* field) {
               
   string playerStr = "Player: " + player;
   playerStr.copy(playerLabel, playerStr.size());
-  strncpy( scoreLabel, "Score: 0", 8);
+  strncpy(scoreLabel, "Score: 0", 8);
   height = field->getHeight();
   width = 4.0;
   length = 4.0;
@@ -114,23 +116,19 @@ void GlutDrawer::updateNext(Drawable* piece){
       next[i][j] = shape[i][j];
     }
   }
-  return;
 }
 
 void GlutDrawer::updateScore(int value) {
   string scoreStr = "Score: " + to_string(value);
   scoreStr.copy(scoreLabel, scoreStr.size());
-  return;
 }
 
 void GlutDrawer::showGameOver() {
-  exit(0);
-  return;
+  finished = true;
 }
 
-void GlutDrawer::showPause() {
-  // TODO
-  return;
+void GlutDrawer::switchPause(bool paused) {
+  this->paused = paused;
 }
 
 void GlutDrawer::display() {
@@ -337,6 +335,36 @@ void GlutDrawer::display() {
       glutStrokeCharacter(GLUT_STROKE_ROMAN, helpLabel6[i]);
     }
   glPopMatrix();
+
+  if(drawer->paused) {
+    //Draws the pause message
+    glViewport(100, 0, 300, 600);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0, 10, -17, 3);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    char pauseLabel[] = "Paused";
+    glPushMatrix();
+      glTranslatef(3.6,-7,0);
+      glScalef(fontRatio, fontRatio, 1);
+      glLineWidth(5);
+      glColor4f(0.3, 0.3, 0.3, 0.3);
+      glPushMatrix();
+        for(int i = 0; i < 6; i++){
+          glutStrokeCharacter(GLUT_STROKE_ROMAN, pauseLabel[i]);
+        }
+      glPopMatrix();
+      glTranslatef(0, 0, 0.1);
+      glLineWidth(1);
+      glColor4f(1.0, 1.0, 1.0, 1.0);
+      for(int i = 0; i < 6; i++){
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, pauseLabel[i]);
+      }
+    glPopMatrix();
+  }
 
   glutSwapBuffers();
   glFlush();
