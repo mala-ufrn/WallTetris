@@ -7,7 +7,7 @@
 
 class Field : public Drawable {
 private:
-  unsigned char** shape;
+  vector<vector<char>> shape;
   Master* master;
   Drawer* drawer;
 
@@ -17,13 +17,9 @@ public:
   // Well object destructor;
   ~Field();
   // Returns the field shape by reference
-  unsigned char** getShape();
-  // Returns field's mumber of columns
-  int getWidth();
-  // Returns field's mumber of rows
-  int getHeight();
+  vector<vector<char>> getShape();
   // Attach the piece of shape at given position (x, y)
-  void attachTetrShape(unsigned char** tetrShape, int dim, int x, int y);
+  void attachTetromino(vector<vector<char>> tetrShape, int x, int y);
   // Prints the well
   void print();
 private:

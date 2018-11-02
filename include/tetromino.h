@@ -2,6 +2,7 @@
 #define TETROMINO_H_
 
 #include <time.h>
+
 #include <mutex>
 using std::mutex;
 
@@ -11,15 +12,13 @@ using std::mutex;
 
 class Tetromino : public Drawable{
 private:
-  static const int DIM = 4;
-  static const int TYPES = 7;
-  static const unsigned char SHAPES[TYPES][DIM][DIM];
+  static const vector<vector<vector<char>>> SHAPES;
   static mutex tetrMutex;
 
   int type,
-    x,
-    y;
-  unsigned char **shape;
+      x,
+      y;
+  vector<vector<char>> shape;
   clock_t clockCheckPoint;
   clock_t pauseOffSet;
   Field *field;
@@ -46,17 +45,12 @@ public:
   // Rotates the tretomino
   void rotate();
   // Returns the tretomino shape by reference
-  unsigned char** getShape();
-  // Returns tretomino's mumber of columns
-  int getWidth();
-  // Returns tretomino's mumber of rows
-  int getHeight();
+  vector<vector<char>> getShape();
 private:
   // Computes the active face Check
   static bool outOfBounds(int y, int fieldHeight); 
   // Checks move validity
-  static bool dontHasConflict(
-      unsigned char** shape, Field* field, int dim, int x, int y);
+  static bool dontHasConflict(vector<vector<char>> shape, Field* field, int x, int y);
 };
 
 #endif // TETROMINO_H_

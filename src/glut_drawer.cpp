@@ -34,7 +34,6 @@ const int GlutDrawer::CAMERA_REFRESH_MSEC = 1000 / FPS;
 
 GlutDrawer::GlutDrawer() {
   lastX = lastY = 0;
-  lastShape = NULL;
   lastPiece = NULL;
   horAngle = 90;
 }
@@ -53,9 +52,10 @@ void GlutDrawer::init(string player, Drawable* field) {
   string playerStr = "Player: " + player;
   playerStr.copy(playerLabel, playerStr.size());
   strncpy(scoreLabel, "Score: 0", 8);
-  height = field->getHeight();
+  height = field->getShape().size();
   width = 4.0;
   length = 4.0;
+
   fieldMatrix = vector<vector<char>>(height);
   for (int i = 0; i < height; ++i) {
     fieldMatrix[i] = vector<char>(width*2 +length*2 - 4/*corners*/, CLEAR);
@@ -63,59 +63,37 @@ void GlutDrawer::init(string player, Drawable* field) {
 }
 
 void GlutDrawer::updateField(Drawable* field) {
-  unsigned char** shape = field->getShape();
-  for(int i = 0; i < field->getHeight(); i++)
-    for(int j = 0; j < field->getWidth(); j++)
-      fieldMatrix[i][j] = shape[i][j];
+  fieldMatrix = field->getShape();
 }
 
 void GlutDrawer::updateActivePiece(Drawable* piece, int x, int y){
-  int dimention = piece->getHeight();
-  unsigned char** shape = piece->getShape();
-
-  // initialize lastShape
-  if(lastShape == NULL){
-    lastShape = (unsigned char**)malloc(dimention * sizeof(unsigned char*));
-    for (int i = 0; i < dimention; ++i) {
-      lastShape[i] = (unsigned char*)malloc(dimention * sizeof(unsigned char));
-    }
-  }
+  vector<vector<char>> shape = piece->getShape();
 
   // clear on last position/rotation;
   if(piece == lastPiece)
-    for(int i = 0; i < dimention; i++)
-      for(int j = 0; j < dimention; j++)
+    for(int i = 0; i < lastShape.size(); i++)
+      for(int j = 0; j < lastShape.size(); j++)
         if(lastShape[i][j] != 0)
           fieldMatrix[lastY + i][(lastX + j)%12] = CLEAR;
 
   // draw the piece
-  for(int i = 0; i < dimention; i++) {
-    for(int j = 0; j < dimention; j++) {
-      if (y+i == 0) {
-        lastShape[i][j] = 0;
-      } else {
-        lastShape[i][j] = shape[i][j];
-
-        if(shape[i][j] != 0) {
+  for(int i = 0; i < shape.size(); i++) {
+    for(int j = 0; j < shape.size(); j++) {
+      if (y+i != 0 && shape[i][j] != 0) {
           fieldMatrix[y + i][(x + j)%12] = shape[i][j];
-        }
       }
     }
   }
 
   //Memorize last values
+  lastShape = shape;
   lastPiece = piece;
   lastX = x;
   lastY = y;
 }
 
 void GlutDrawer::updateNext(Drawable* piece){
-  unsigned char** shape = piece->getShape();
-  for(int i = 0; i < piece->getHeight(); i++) {
-    for(int j = 0; j < piece->getWidth(); j++) {
-      next[i][j] = shape[i][j];
-    }
-  }
+  nextTetr = piece->getShape();
 }
 
 void GlutDrawer::updateScore(int value) {
@@ -213,10 +191,10 @@ void GlutDrawer::display() {
 
   for(int i = 0; i < 4; i++){
     for(int j = 0; j < 4; j++){
-      if (drawer->next[i][j] != CLEAR){
+      if (drawer->nextTetr[i][j] != CLEAR){
         glPushMatrix();
           glTranslatef(j, 4-i,0);
-          setColor(drawer->next[i][j]);
+          setColor(drawer->nextTetr[i][j]);
           glScalef(1, 1, 1);
           glutSolidCube(0.98);
           glColor4f(0.0, 0.0, 0.0, 1);

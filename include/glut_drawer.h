@@ -31,13 +31,13 @@ private:
   //Matrix of Wall Tetrix
   vector<vector<char>> fieldMatrix;
   //Matrix of Next Tetromino
-  char next[4][4];
+  vector<vector<char>> nextTetr;
   //Piece last x
   int lastX;
   //Piece last y
   int lastY;
   //Piece last shape
-  unsigned char** lastShape;
+  vector<vector<char>> lastShape;
   //active piece reference
   Drawable* lastPiece;
   //

@@ -2,6 +2,7 @@
 game
 
 # Compiled Object files
+bin/
 *.slo
 *.lo
 *.o
