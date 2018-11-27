@@ -20,8 +20,8 @@ ImageRender::ImageRender(Shader* imageShader, const char* imagePath, GLfloat wid
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texture);
   // set the texture wrapping/filtering options (on the currently bound texture object)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER); 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   
@@ -49,7 +49,7 @@ ImageRender::ImageRender(Shader* imageShader, const char* imagePath, GLfloat wid
 
   glBindVertexArray(VAO);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), NULL, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
@@ -62,7 +62,7 @@ ImageRender::ImageRender(Shader* imageShader, const char* imagePath, GLfloat wid
 void ImageRender::draw(GLfloat x, GLfloat y){
   // translate the figure  
   glm::mat4 model = glm::mat4();
-  glm::translate(model, glm::vec3(x, y, 0));
+  model = glm::translate(model, glm::vec3(x, y, 0));
 
   imageShader->use();
   imageShader->setMatrix4f("model", model);;

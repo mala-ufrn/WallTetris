@@ -7,6 +7,22 @@
 #include <sstream>
 #include <iostream>
 
+TextRender::TextRender(Shader* textShader, const char* charfontPath, int fontSize){
+  this->textShader = textShader;
+
+  buildTextureAtlas(charfontPath, &charsTexture, fontSize, &charactersAtlas, &charsAtlasWidth, &charsAtlasHeight);
+
+  glGenBuffers(1, &txtVBO);
+  glGenVertexArrays(1, &txtVAO);
+
+  glBindVertexArray(txtVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, txtVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)0);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
+  glEnableVertexAttribArray(1);
+}
 
 TextRender::TextRender(Shader* textShader, const char* charfontPath, const char* iconfontPath, int fontSize){
   this->textShader = textShader;
@@ -26,10 +42,10 @@ TextRender::TextRender(Shader* textShader, const char* charfontPath, const char*
   glEnableVertexAttribArray(1);
 }
 
-void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color){
+void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 hsvColor){
   // Activate corresponding render state  
   textShader->use();
-  textShader->setVector3f("textColor", color);
+  textShader->setVector3f("hsvColor", hsvColor);
   glBindVertexArray(txtVAO);
   // Activate corresponding texture
   glActiveTexture(GL_TEXTURE0);
@@ -43,7 +59,7 @@ void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scal
   std::string::const_iterator c;
   for (c = text.begin(); c != text.end(); c++) {
     
-    if (*c == '\\') {
+    if (*c == '\\' && iconsAtlas.size() != 0) {
       isIcon = true;
       texture = &iconsTexture;
       atlasWidth = &iconsAtlasWidth;
@@ -126,7 +142,7 @@ void TextRender::buildTextureAtlas(const char* ttfPath, GLuint* texture, int fon
 
     if(roww + g->bitmap.width + 1 >= ATLAS_MAXWIDTH) {
       width = std::max(width, roww);
-      height += rowh;
+      height += rowh + 1;
       roww = 0;
       rowh = 0;
     }
@@ -166,7 +182,7 @@ void TextRender::buildTextureAtlas(const char* ttfPath, GLuint* texture, int fon
     }
 
     if (offsetX + g->bitmap.width + 1 >= ATLAS_MAXWIDTH) {
-      offsetY += rowh;
+      offsetY += rowh + 1;
       rowh = 0;
       offsetX = 0;
     }
