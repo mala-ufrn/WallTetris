@@ -39,7 +39,7 @@ public:
   TextRender(Shader* textShader, const char* charfontPath, int fontSize);
   TextRender(Shader* textShader, const char* charfontPath, const char* iconfontPath, int fontSize);
 
-  void renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 hsvColor);
+  void renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 private:
   void buildTextureAtlas(const char* ttfPath, GLuint* texture, int fontSize,
       std::map<GLchar, Character> *atlas, int* atlasWidth, int* atlasHeight);

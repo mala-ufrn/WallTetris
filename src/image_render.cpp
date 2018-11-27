@@ -59,13 +59,14 @@ ImageRender::ImageRender(Shader* imageShader, const char* imagePath, GLfloat wid
   glEnableVertexAttribArray(1);
 }
 
-void ImageRender::draw(GLfloat x, GLfloat y){
+void ImageRender::draw(GLfloat x, GLfloat y, glm::vec3 color){
   // translate the figure  
   glm::mat4 model = glm::mat4();
   model = glm::translate(model, glm::vec3(x, y, 0));
 
   imageShader->use();
-  imageShader->setMatrix4f("model", model);;
+  imageShader->setMatrix4f("model", model);
+  imageShader->setVector3f("color", color);
   
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texture);

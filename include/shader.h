@@ -69,6 +69,11 @@ public:
     glDeleteShader(vertex);
     glDeleteShader(fragment);
   }
+
+  ~Shader() {
+    glDeleteProgram(ID);
+  }
+  
   // self explanatory
   unsigned int getId(){
     return ID;

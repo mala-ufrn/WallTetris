@@ -42,10 +42,10 @@ TextRender::TextRender(Shader* textShader, const char* charfontPath, const char*
   glEnableVertexAttribArray(1);
 }
 
-void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 hsvColor){
+void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color){
   // Activate corresponding render state  
   textShader->use();
-  textShader->setVector3f("hsvColor", hsvColor);
+  textShader->setVector3f("textColor", color);
   glBindVertexArray(txtVAO);
   // Activate corresponding texture
   glActiveTexture(GL_TEXTURE0);
@@ -54,12 +54,13 @@ void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scal
   int *atlasWidth = &charsAtlasWidth,
       *atlasHeight = &charsAtlasHeight;
 
-  bool isIcon;
+  bool isIcon = false;
   // Iterate through all characters
   std::string::const_iterator c;
-  for (c = text.begin(); c != text.end(); c++) {
-    
-    if (*c == '\\' && iconsAtlas.size() != 0) {
+
+  for (c = text.begin(); c != text.end(); c++){
+
+    if (*c == '\\' && iconsAtlas.size() != 0){
       isIcon = true;
       texture = &iconsTexture;
       atlasWidth = &iconsAtlasWidth;
@@ -79,6 +80,7 @@ void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scal
 
     GLfloat w = ch.size.x * scale;
     GLfloat h = ch.size.y * scale;
+    
     // Update VBO for each character
     GLfloat vertices[6][4] = {
       // positions            // texture coords 
