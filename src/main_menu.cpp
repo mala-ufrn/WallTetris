@@ -15,6 +15,7 @@ MainMenu::MainMenu(const glm::vec2 win_dimentions, float* scrFact, float* wdPadd
 	winOrigDims = win_dimentions;
 	scrFactor = scrFact;
 	widePadding = wdPadd;
+  selected = 0;
 
 	textShader = new Shader("res/shaders/text_shader.vs", "res/shaders/text_shader.fs");
   imageShader = new Shader("res/shaders/image_shader.vs", "res/shaders/image_shader.fs");
@@ -44,11 +45,20 @@ MainMenu::~MainMenu() {
 }
 
 void MainMenu::processInputs(int* keyCode, int* keyAction) {
-
+  if (*keyAction == GLFW_PRESS) {
+    switch (*keyCode) {
+      case GLFW_KEY_W:
+        selected = (selected + 1) % 2;
+        break;
+      case GLFW_KEY_S:
+        selected = (selected + 1) % 2;
+        break;
+    }
+  }
 }
 
 void MainMenu::update() {
-	float hue = (float)((int)(glfwGetTime() * 24) % 360);
+  float hue = (float)((int)(glfwGetTime() * 24) % 360);
   float sat = 1.0;
   float val = 1.0;
   
@@ -76,14 +86,14 @@ void MainMenu::update() {
 }
 
 void MainMenu::draw() {
-	glViewport(*widePadding, 0, winOrigDims.x * *scrFactor, winOrigDims.y * *scrFactor);
+  glViewport(*widePadding, 0, winOrigDims.x * *scrFactor, winOrigDims.y * *scrFactor);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   backGround->draw(0.0f, 0.0f, glm::vec3(0.2f, 0.2f, 0.2f));
   trumpImage->draw(362.0f, 0.0f);
 
   soapStore140->renderLeft("WALLTETRIS", 25.0f, 450.0f, 1.0f, titleRgb);
-  sansPsx64->renderLeft("\\!", 40.0f + arrowAnim, 303.0f, 0.6f, glm::vec3(1.0, 1.0, 0.0));
+  sansPsx64->renderLeft("\\!", 40.0f + arrowAnim, 303.0f - selected*60, 0.6f, glm::vec3(1.0, 1.0, 0.0));
   soapStore140->renderLeft("Endless mode", 85.0f, 300.0f, 0.4f, glm::vec3(0.8, 0.8, 0.0));
   soapStore140->renderLeft("Credits", 85.0f, 240.0f, 0.4f, glm::vec3(0.8, 0.8, 0.8));
   sansKey64->renderLeft("Press \\f to select", 25.0f, 25.0f, 0.35f, glm::vec3(1.0, 1.0, 1.0));

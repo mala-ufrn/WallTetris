@@ -15,6 +15,8 @@ private:
   float *scrFactor,
         *widePadding;
 
+  int selected;
+
   glm::vec2 winOrigDims;
   glm::vec3 titleRgb;
 
