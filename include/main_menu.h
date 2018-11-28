@@ -29,7 +29,7 @@ private:
 public:
   MainMenu(const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);
   ~MainMenu();
-  void processInputs();
+  void processInputs(int* keyCode, int* keyAction);
   void update();
   void draw();
 };

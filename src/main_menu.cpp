@@ -43,7 +43,7 @@ MainMenu::~MainMenu() {
 	delete backGround;
 }
 
-void MainMenu::processInputs() {
+void MainMenu::processInputs(int* keyCode, int* keyAction) {
 
 }
 

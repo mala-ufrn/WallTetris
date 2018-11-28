@@ -12,19 +12,25 @@ class Game : public SceneMaster {
   float *scrFactor,
         *widePadding;
 
+  int *keyCode,
+      *keyAction;
+
   glm::vec2 winOrigDims;
 
   Scene *currentScene;
   MainMenu *mainMenu;
 
 public:
-  Game(const glm::vec2 win_dimentions, float* scrFact, float* wdPadd) {
+  Game(const glm::vec2 win_dimentions, float* scrFact, float* wdPadd, int* keyCode, int* keyAction) {
     mainMenu = new MainMenu(win_dimentions, scrFact, wdPadd);
     currentScene = mainMenu;
 
     winOrigDims = win_dimentions;
     scrFactor = scrFact;
     widePadding = wdPadd;
+
+    this->keyCode = keyCode;
+    this->keyAction = keyAction;
   }
 
   ~Game(){
@@ -38,7 +44,7 @@ public:
   void goToCredits(){}
 
   void execute(){
-    currentScene->processInputs();
+    currentScene->processInputs(keyCode, keyAction);
     currentScene->update();
     currentScene->draw();
   }

@@ -14,6 +14,9 @@ const glm::vec2 WIN_ORIG_DIM = glm::vec2(960.0f, 720.0f);
 float scrFactor = 1.0f,
       widePadding = 0.0f;
 
+int keyCode,
+    actionCode;
+
 const GLchar *WINDOW_TITLE = "WALLTETRIS";
 
 //Func prototipes
@@ -55,7 +58,7 @@ int main(int argc, char *argv[]) {
   glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
   // Create game's objects
-  Game *game = new Game(WIN_ORIG_DIM, &scrFactor, &widePadding);
+  Game *game = new Game(WIN_ORIG_DIM, &scrFactor, &widePadding, &keyCode, &actionCode);
 
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
@@ -96,4 +99,9 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     glDisable(GL_SCISSOR_TEST);
     widePadding = 0.0f;
   }
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  keyCode = key;
+  actionCode = action;
 }
