@@ -15,6 +15,8 @@ MainMenu::MainMenu(const glm::vec2 win_dimentions, float* scrFact, float* wdPadd
 	winOrigDims = win_dimentions;
 	scrFactor = scrFact;
 	widePadding = wdPadd;
+  selected = 0;
+  pressed = false;
 
 	textShader = new Shader("res/shaders/text_shader.vs", "res/shaders/text_shader.fs");
   imageShader = new Shader("res/shaders/image_shader.vs", "res/shaders/image_shader.fs");
@@ -43,8 +45,26 @@ MainMenu::~MainMenu() {
 	delete backGround;
 }
 
-void MainMenu::processInputs() {
+void MainMenu::processInputs(GLFWwindow *window) {
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+    if (!pressed){
+      std::cout << "Entrou" << std::endl;
+      selected = (selected + 1) % 2;
+    }
+    pressed = true;
+  }  else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    if (!pressed){
+      std::cout << "Entrou" << std::endl;
+      selected = (selected + 1) % 2;
+    }
+    pressed = true;
+  }  else if (pressed){
+    std::cout << "Saiu" << std::endl;
+    pressed = false;
+  }
 
+  // if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+  //     cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 void MainMenu::update() {
@@ -83,7 +103,7 @@ void MainMenu::draw() {
   trumpImage->draw(362.0f, 0.0f);
 
   soapStore140->renderLeft("WALLTETRIS", 25.0f, 450.0f, 1.0f, titleRgb);
-  sansPsx64->renderLeft("\\!", 40.0f + arrowAnim, 303.0f, 0.6f, glm::vec3(1.0, 1.0, 0.0));
+  sansPsx64->renderLeft("\\!", 40.0f + arrowAnim, 303.0f - selected*60, 0.6f, glm::vec3(1.0, 1.0, 0.0));
   soapStore140->renderLeft("Endless mode", 85.0f, 300.0f, 0.4f, glm::vec3(0.8, 0.8, 0.0));
   soapStore140->renderLeft("Credits", 85.0f, 240.0f, 0.4f, glm::vec3(0.8, 0.8, 0.8));
   sansKey64->renderLeft("Press \\f to select", 25.0f, 25.0f, 0.35f, glm::vec3(1.0, 1.0, 1.0));

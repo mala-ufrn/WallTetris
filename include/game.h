@@ -37,8 +37,8 @@ public:
 
   void goToCredits(){}
 
-  void execute(){
-    currentScene->processInputs();
+  void execute(GLFWwindow *window){
+    currentScene->processInputs(window);
     currentScene->update();
     currentScene->draw();
   }
