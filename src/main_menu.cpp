@@ -46,7 +46,26 @@ MainMenu::~MainMenu() {
 }
 
 void MainMenu::processInputs(GLFWwindow *window) {
-  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+	if (glfwJoystickPresent(GLFW_JOYSTICK_2)) {
+		int numAxis;
+		const float *axis = glfwGetJoystickAxes(GLFW_JOYSTICK_2, &numAxis);
+
+/*  for (int i = 0; i < numAxis; i++) {
+			std::cout << axis[i] << " ";
+		}
+		std::cout << std::endl;
+*/
+		if (axis[7] != 0 || axis[1] < -0.3f || axis[1] > 0.3f) {
+	    if (!pressed){
+	      selected = (selected + 1) % 2;
+	    }
+	    pressed = true;
+  	}  else if (pressed){
+    	pressed = false;
+  	}
+	}
+	
+  else {if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
     if (!pressed){
       selected = (selected + 1) % 2;
     }
@@ -58,7 +77,7 @@ void MainMenu::processInputs(GLFWwindow *window) {
     pressed = true;
   }  else if (pressed){
     pressed = false;
-  }
+  }}
 
   // if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
   //     cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
@@ -99,9 +118,12 @@ void MainMenu::draw() {
   backGround->draw(0.0f, 0.0f, glm::vec3(0.2f, 0.2f, 0.2f));
   trumpImage->draw(362.0f, 0.0f);
 
+  glm::vec3 white(0.8f, 0.8f, 0.8f);
+  glm::vec3 yellow(0.8f, 0.8f, 0.0f);
+
   soapStore140->renderLeft("WALLTETRIS", 25.0f, 450.0f, 1.0f, titleRgb);
   sansPsx64->renderLeft("\\!", 40.0f + arrowAnim, 303.0f - selected*60, 0.6f, glm::vec3(1.0, 1.0, 0.0));
-  soapStore140->renderLeft("Endless mode", 85.0f, 300.0f, 0.4f, glm::vec3(0.8, 0.8, 0.0));
-  soapStore140->renderLeft("Credits", 85.0f, 240.0f, 0.4f, glm::vec3(0.8, 0.8, 0.8));
+  soapStore140->renderLeft("Endless mode", 85.0f, 300.0f, 0.4f, !selected? yellow : white);
+  soapStore140->renderLeft("Credits", 85.0f, 240.0f, 0.4f, selected? yellow : white);
   sansKey64->renderLeft("Press \\f to select", 25.0f, 25.0f, 0.35f, glm::vec3(1.0, 1.0, 1.0));
 }
