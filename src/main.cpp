@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
     
   while (!glfwWindowShouldClose(window)) {
     
-    game->execute();
+    game->execute(window);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
