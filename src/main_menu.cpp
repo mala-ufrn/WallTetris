@@ -48,18 +48,15 @@ MainMenu::~MainMenu() {
 void MainMenu::processInputs(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
     if (!pressed){
-      std::cout << "Entrou" << std::endl;
       selected = (selected + 1) % 2;
     }
     pressed = true;
   }  else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
     if (!pressed){
-      std::cout << "Entrou" << std::endl;
       selected = (selected + 1) % 2;
     }
     pressed = true;
   }  else if (pressed){
-    std::cout << "Saiu" << std::endl;
     pressed = false;
   }
 

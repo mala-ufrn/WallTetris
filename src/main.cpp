@@ -54,8 +54,6 @@ int main(int argc, char *argv[]) {
   glfwSetErrorCallback(errorCallback);
   glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-  glfwSetInputMode(window, GLFW_STICKY_KEYS, 0);
-
   // Create game's objects
   Game *game = new Game(WIN_ORIG_DIM, &scrFactor, &widePadding);
 
