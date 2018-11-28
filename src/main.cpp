@@ -22,6 +22,7 @@ const GLchar *WINDOW_TITLE = "WALLTETRIS";
 //Func prototipes
 void errorCallback(int error, const char* description);
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 int main(int argc, char *argv[]) {
 
@@ -56,6 +57,8 @@ int main(int argc, char *argv[]) {
   // Set  callback functions
   glfwSetErrorCallback(errorCallback);
   glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+  glfwSetKeyCallback(window, key_callback);
 
   // Create game's objects
   Game *game = new Game(WIN_ORIG_DIM, &scrFactor, &widePadding, &keyCode, &actionCode);
