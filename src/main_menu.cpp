@@ -16,6 +16,7 @@ MainMenu::MainMenu(const glm::vec2 win_dimentions, float* scrFact, float* wdPadd
 	scrFactor = scrFact;
 	widePadding = wdPadd;
   selected = 0;
+  pressed = false;
 
 	textShader = new Shader("res/shaders/text_shader.vs", "res/shaders/text_shader.fs");
   imageShader = new Shader("res/shaders/image_shader.vs", "res/shaders/image_shader.fs");
@@ -48,14 +49,34 @@ void MainMenu::processInputs(int* keyCode, int* keyAction) {
   if (*keyAction == GLFW_PRESS) {
     switch (*keyCode) {
       case GLFW_KEY_W:
-        selected = (selected + 1) % 2;
+        if (!pressed)
+          selected = (selected + 1) % 2;
+        pressed = true;
         break;
       case GLFW_KEY_S:
-        selected = (selected + 1) % 2;
+        if (!pressed)
+          selected = (selected + 1) % 2;
+        pressed = true;
         break;
     }
-  }
+  } else
+    pressed = false;
 }
+
+
+  // if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+  //   if (!pressed){
+  //     selected = (selected + 1) % 2;
+  //   }
+  //   pressed = true;
+  // }  else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+  //   if (!pressed){
+  //     selected = (selected + 1) % 2;
+  //   }
+  //   pressed = true;
+  // }  else if (pressed){
+  //   pressed = false;
+  // }
 
 void MainMenu::update() {
   float hue = (float)((int)(glfwGetTime() * 24) % 360);

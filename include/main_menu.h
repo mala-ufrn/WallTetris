@@ -16,6 +16,7 @@ private:
         *widePadding;
 
   int selected;
+  bool pressed;
 
   glm::vec2 winOrigDims;
   glm::vec3 titleRgb;
