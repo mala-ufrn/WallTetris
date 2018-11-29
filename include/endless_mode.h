@@ -1,5 +1,5 @@
-#ifndef MAIN_MENU_H
-#define MAIN_MENU_H
+#ifndef ENDLESS_MODE_H
+#define ENDLESS_MODE_H
 
 #include <glm/glm.hpp>
 
@@ -9,32 +9,25 @@
 #include "text_render.h"
 #include "image_render.h"
 
-class MainMenu : public Scene {
+class EndlessMode : public Scene {
 private:
 
   SceneMaster *sceneMaster;
 
-  int selected;
-  bool pressed;
-
-  float arrowAnim;
   float *scrFactor,
         *widePadding;
 
   glm::vec2 winOrigDims;
-  glm::vec3 titleRgb;
 
   Shader *textShader,
          *imageShader;
   TextRender *sansPsx64,
-             *sansKey64,
-             *soapStore140;
-  ImageRender *trumpImage,
-              *backGround;
+             *sansKey64;
+  ImageRender *backGround;
 
 public:
-  MainMenu(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);
-  ~MainMenu();
+  EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);
+  ~EndlessMode();
   void processInputs(GLFWwindow *window);
   void update();
   void draw();

@@ -5,7 +5,6 @@ game
 *(cópia)/
 
 # Compiled Object files
-bin/
 *.slo
 *.lo
 *.o

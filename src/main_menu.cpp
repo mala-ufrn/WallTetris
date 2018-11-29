@@ -1,8 +1,5 @@
 #include "../include/main_menu.h"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 #include <iostream>
@@ -10,7 +7,9 @@
 #define WIDTH 800.0f
 #define HEIGHT 600.0f
 
-MainMenu::MainMenu(const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
+MainMenu::MainMenu(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
+
+  this->sceneMaster = sceneMaster;
 
 	winOrigDims = win_dimentions;
 	scrFactor = scrFact;
@@ -28,11 +27,12 @@ MainMenu::MainMenu(const glm::vec2 win_dimentions, float* scrFact, float* wdPadd
   imageShader->use();
   imageShader->setMatrix4f("projection", projection);
 
+  trumpImage = new ImageRender(imageShader, "res/img/main_img.png", 438, 600);
+  backGround = new ImageRender(imageShader, "res/img/bkg0.png", 800, 600);
+
   sansPsx64 = new TextRender(textShader, "res/fonts/FreeSans.ttf", "res/fonts/IconicPSx.ttf", 64);
   sansKey64 = new TextRender(textShader, "res/fonts/FreeSans.ttf", "res/fonts/KeyCapsFLF.ttf", 64);
   soapStore140 = new TextRender(textShader, "res/fonts/soap_store.otf", 140);
-  trumpImage = new ImageRender(imageShader, "res/img/main_img.png", 438, 600);
-  backGround = new ImageRender(imageShader, "res/img/bkg0.png", 800, 600);
 }
 
 MainMenu::~MainMenu() {
@@ -65,22 +65,24 @@ void MainMenu::processInputs(GLFWwindow *window) {
   	}
 	}
 	
-  else {if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-    if (!pressed){
-      selected = (selected + 1) % 2;
+  else {
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+      if (!pressed){
+        selected = (selected + 1) % 2;
+      }
+      pressed = true;
+    }  else if (pressed){
+      pressed = false;
     }
-    pressed = true;
-  }  else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-    if (!pressed){
-      selected = (selected + 1) % 2;
-    }
-    pressed = true;
-  }  else if (pressed){
-    pressed = false;
-  }}
 
-  // if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
-  //     cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
+      if (selected == 0){
+        sceneMaster->goToEndless();
+      } else {
+        sceneMaster->goToCredits();
+      }
+    }
+  }
 }
 
 void MainMenu::update() {
