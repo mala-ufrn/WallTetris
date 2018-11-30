@@ -1,4 +1,4 @@
-#include "../include/text_render.h"
+#include "rendering/text_render.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H 
@@ -12,6 +12,7 @@ TextRender::TextRender(Shader* textShader, const char* charfontPath, int fontSiz
   this->textShader = textShader;
 
   buildTextureAtlas(charfontPath, &charsTexture, fontSize, &charactersAtlas, &charsAtlasWidth, &charsAtlasHeight);
+  iconsTexture = 0;
 
   glGenBuffers(1, &txtVBO);
   glGenVertexArrays(1, &txtVAO);
@@ -41,6 +42,13 @@ TextRender::TextRender(Shader* textShader, const char* charfontPath, const char*
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
   glEnableVertexAttribArray(1);
+}
+
+TextRender::~TextRender(){
+  glDeleteTextures(1, &charsTexture);
+  glDeleteTextures(1, &iconsTexture);
+  glDeleteBuffers(1, &txtVBO);
+  glDeleteVertexArrays(1, &txtVAO);
 }
 
 void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color){

@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-#include "../include/game.h"
+#include "game.h"
 
 const glm::vec2 WIN_ORIG_DIM = glm::vec2(960.0f, 720.0f);
 

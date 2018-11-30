@@ -1,9 +1,9 @@
-#include "../include/image_render.h"
+#include "rendering/image_render.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "../include/stb_image.h"
+#include "utils/stb_image.h"
 
 #include <fstream>
 #include <sstream>
@@ -52,6 +52,13 @@ ImageRender::ImageRender(Shader* imageShader, const char* imagePath, GLfloat wid
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
   glEnableVertexAttribArray(1);
+}
+
+ImageRender::~ImageRender(){
+  glDeleteTextures(1, &texture);
+  glDeleteBuffers(1, &VBO);
+  glDeleteBuffers(1, &EBO);
+  glDeleteVertexArrays(1, &VAO);
 }
 
 void ImageRender::draw(GLfloat x, GLfloat y, glm::vec3 color){

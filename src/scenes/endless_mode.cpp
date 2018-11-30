@@ -1,4 +1,4 @@
-#include "../include/endless_mode.h"
+#include "scenes/endless_mode.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
@@ -9,6 +9,10 @@
 EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
 
   this->sceneMaster = sceneMaster;
+
+  field = NULL;
+  nextTetr = NULL;
+  activeTetr = NULL;
 
 	winOrigDims = win_dimentions;
 	scrFactor = scrFact;
@@ -33,8 +37,23 @@ EndlessMode::~EndlessMode() {
 	delete textShader;
 	delete imageShader;
 	delete sansPsx64;
-	delete sansKey64;
+  delete sansKey64;
 	delete backGround;
+}
+
+void EndlessMode::createNextTetr(int posX) {
+
+}
+
+void EndlessMode::increaseLines(int quantity){ 
+  lines += quantity;
+
+  if (lines > 1 && lines <= 90) {
+    level = 1 + (lines-1)/10;
+  }
+  else {
+    level = 10;
+  }
 }
 
 void EndlessMode::processInputs(GLFWwindow *window) {
@@ -104,6 +123,6 @@ void EndlessMode::draw() {
   glViewport(*widePadding, 0, winOrigDims.x * *scrFactor, winOrigDims.y * *scrFactor);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  backGround->draw(0.0f, 0.0f, glm::vec3(0.2f, 0.2f, 0.2f));
+  backGround->draw(0.0f, 0.0f, glm::vec3(0.3f, 0.3f, 0.3f));
   sansKey64->renderLeft("Press \\Q to back", 25.0f, 25.0f, 0.35f, glm::vec3(1.0, 1.0, 1.0));
 }

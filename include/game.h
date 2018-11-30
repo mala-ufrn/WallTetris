@@ -3,9 +3,9 @@
 
 #include <glm/glm.hpp>
 
-#include "main_menu.h"
-#include "endless_mode.h"
-#include "credits.h"
+#include "scenes/main_menu.h"
+#include "scenes/endless_mode.h"
+#include "scenes/credits.h"
 #include "scene_master.h"
 #include "scene.h"
 
@@ -29,26 +29,22 @@ public:
 
     mainMenu = new MainMenu(this, win_dimentions, scrFact, wdPadd);
     credits = new Credits(this, win_dimentions, scrFact, wdPadd);
+    endlessMode = new EndlessMode(this, winOrigDims, scrFactor, widePadding);
     currentScene = mainMenu;
   }
 
   ~Game(){
-    if (currentScene == endlessMode) {
-      delete endlessMode;
-    }
+    delete endlessMode;
     delete mainMenu;
     delete credits;
   }
 
   void goToMainMenu(){
-    if (currentScene == endlessMode) {
-      delete endlessMode;
-    }
     currentScene = mainMenu;
   }
 
   void goToEndless(){
-    endlessMode = new EndlessMode(this, winOrigDims, scrFactor, widePadding);
+    
     currentScene = endlessMode;
   }
 

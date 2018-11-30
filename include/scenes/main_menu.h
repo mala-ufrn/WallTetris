@@ -5,9 +5,9 @@
 
 #include "scene.h"
 #include "scene_master.h"
-#include "shader.h"
-#include "text_render.h"
-#include "image_render.h"
+#include "utils/shader.h"
+#include "rendering/text_render.h"
+#include "rendering/image_render.h"
 
 class MainMenu : public Scene {
 private:
@@ -16,6 +16,7 @@ private:
 
   int selected;
   bool pressed;
+  bool jspresent;
 
   float arrowAnim;
   float *scrFactor,
@@ -28,7 +29,7 @@ private:
          *imageShader;
   TextRender *sansPsx64,
              *sansKey64,
-             *soapStore140;
+             *soapStore200;
   ImageRender *trumpImage,
               *backGround;
 

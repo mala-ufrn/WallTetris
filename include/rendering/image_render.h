@@ -1,7 +1,7 @@
 #ifndef IMAGE_RENDER_H
 #define IMAGE_RENDER_H
 
-#include "shader.h"
+#include "utils/shader.h"
 
 class ImageRender {
 private:
@@ -29,6 +29,7 @@ private:
 public:
   // constructor read vertex and frag files and generates the shader 
   ImageRender(Shader* imageShader, const char* imagePath, GLfloat width, GLfloat heigth);
+  ~ImageRender();
 
   void draw(GLfloat x, GLfloat y, glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f));
 };

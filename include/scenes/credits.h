@@ -5,14 +5,16 @@
 
 #include "scene.h"
 #include "scene_master.h"
-#include "shader.h"
-#include "text_render.h"
-#include "image_render.h"
+#include "utils/shader.h"
+#include "rendering/text_render.h"
+#include "rendering/image_render.h"
 
 class Credits : public Scene {
 private:
 
   SceneMaster *sceneMaster;
+
+  bool jspresent;
 
   float *scrFactor,
         *widePadding;
