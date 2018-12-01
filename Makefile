@@ -8,7 +8,8 @@ FREETYPE_CFLAGS = `pkg-config --cflags freetype2`
 INCLUDE_PATH = -I./include
 
 OBJECTS = bin/glad.o bin/image_render.o bin/main.o bin/text_render.o \
-          bin/main_menu.o bin/endless_mode.o bin/credits.o
+          bin/main_menu.o bin/endless_mode.o bin/credits.o bin/model_render.o \
+          
 
 game: $(OBJECTS)
 	g++ $(OBJECTS) -o game $(LDFLAGS)
@@ -18,13 +19,15 @@ bin/credits.o: scene.h credits.h credits.cpp
 	g++ -c src/scenes/credits.cpp -o bin/credits.o $(INCLUDE_PATH)
 bin/glad.o: glad.c
 	gcc -c src/utils/glad.c -o bin/glad.o
-bin/image_render.o: image_render.h image_render.cpp
+bin/image_render.o: shader.h image_render.h image_render.cpp
 	g++ -c src/rendering/image_render.cpp -o bin/image_render.o $(INCLUDE_PATH)
 bin/main.o: $(UTILS) game.h scene_master.h main.cpp
 	g++ -c src/main.cpp -o bin/main.o $(INCLUDE_PATH)
 bin/main_menu.o: scene.h main_menu.h main_menu.cpp
 	g++ -c src/scenes/main_menu.cpp -o bin/main_menu.o $(INCLUDE_PATH)
-bin/text_render.o: text_render.h text_render.cpp
+bin/model_render.o: shader.h model_render.h model_render.cpp
+	g++ -c src/rendering/model_render.cpp -o bin/model_render.o $(INCLUDE_PATH)
+bin/text_render.o: shader.h text_render.h text_render.cpp
 	g++ -c src/rendering/text_render.cpp -o bin/text_render.o $(INCLUDE_PATH) \
 	$(FREETYPE_CFLAGS)
 clean:

@@ -2,8 +2,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #include "utils/stb_image.h"
+#endif
 
 #include <fstream>
 #include <sstream>

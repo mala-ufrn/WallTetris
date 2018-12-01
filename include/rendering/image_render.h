@@ -13,7 +13,7 @@ private:
          EBO,
          texture;
 
-  float vertices[16] = {
+  GLfloat vertices[16] = {
     // positions  // texture coords
     0.0f, 0.0f,   1.0f, 1.0f,   // top right
     0.0f, 0.0f,   1.0f, 0.0f,   // bottom right
@@ -21,7 +21,7 @@ private:
     0.0f, 0.0f,   0.0f, 1.0f    // top left 
   };
 
-  unsigned int indices[6] = {  
+  GLuint indices[6] = {  
     0, 3, 1, // first triangle
     1, 3, 2  // second triangle
   };

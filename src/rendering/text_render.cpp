@@ -102,6 +102,11 @@ void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scal
       { xpos + w, ypos + h,   ch.texcoord.x + ch.size.x / *atlasWidth, ch.texcoord.y}
     };
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     // bind texture
     glBindTexture(GL_TEXTURE_2D, *texture);
     // Update content of VBO memory
@@ -175,11 +180,6 @@ void TextRender::buildTextureAtlas(const char* ttfPath, GLuint* texture, int fon
 
   std::vector<GLubyte> emptyData(width * height, 0);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, &emptyData[0]);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   int offsetX = 0,
       offsetY = 0;

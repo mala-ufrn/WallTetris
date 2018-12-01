@@ -8,6 +8,7 @@
 #include "utils/shader.h"
 #include "rendering/text_render.h"
 #include "rendering/image_render.h"
+#include "rendering/model_render.h"
 #include "models/tetromino.h"
 #include "models/field.h"
 
@@ -41,10 +42,14 @@ private:
   //Object that draws the game scene
 
   Shader *textShader,
-         *imageShader;
+         *imageShader,
+         *quadShader,
+         *wireShader,
+         *blockShader;
   TextRender *sansPsx64,
              *sansKey64;
   ImageRender *backGround;
+  ModelRender *modelRender;
 
 public:
   EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);
