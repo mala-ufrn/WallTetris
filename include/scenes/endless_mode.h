@@ -17,10 +17,14 @@ private:
 
   SceneMaster *sceneMaster;
 
+  bool jspresent;
+
   // Flag for new game
   bool playing;
   // Flag for pause
   bool paused;
+  // High Score
+  int highScore;
   // Player score
   int score;
   // Game level
@@ -44,12 +48,18 @@ private:
   Shader *textShader,
          *imageShader,
          *quadShader,
-         *wireShader,
-         *blockShader;
+         *gameWireShader,
+         *uiWireShader,
+         *gameBlockShader,
+         *uiBlockShader;
   TextRender *sansPsx64,
              *sansKey64;
-  ImageRender *backGround;
-  ModelRender *modelRender;
+  ImageRender *backGround,
+              *fieldBGround,
+              *nextBGround;
+  ModelRender *gameModelRender,
+              *uiModelRender;
+
 
 public:
   EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);

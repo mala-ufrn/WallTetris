@@ -65,8 +65,7 @@ ImageRender::~ImageRender(){
 
 void ImageRender::draw(GLfloat x, GLfloat y, glm::vec3 color){
   // translate the figure  
-  glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(model, glm::vec3(x, y, 0));
+  glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0));
 
   imageShader->use();
   imageShader->setMatrix4f("model", model);

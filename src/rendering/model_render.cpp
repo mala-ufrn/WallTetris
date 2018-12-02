@@ -152,9 +152,50 @@ ModelRender::~ModelRender(){
   glDeleteVertexArrays(1, &fdCeilingVAO);
 }
 
+void ModelRender::drawNext(std::vector<std::vector<char>> nextTetr){
+  for(int i = 0; i < nextTetr.size(); i++){
+    for(int j = 0; j < nextTetr[0].size(); j++){
+      if (nextTetr[i][j] != 0){
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(j - 2.0f , 1.0f - i, -0.5f));
+        
+        blockShader->use();
+        blockShader->setMatrix4f("model", model);
+        blockShader->setVector3f("objectColor", getBlockColor(nextTetr[i][j]));
+        
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        wireShader->use();
+        wireShader->setMatrix4f("model", model);
+        wireShader->setVector4f("wireColor", 0.0f, 0.0f, 0.0f, 1.0f);
+        glBindVertexArray(cbEdgesVAO);
+        glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
+      }
+    }
+  }
+}
+
 void ModelRender::drawField(){
-  // translate the model
-  glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(4.0f, 18.0f, 4.0f));
+  // Botton
+  glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(4.0f, 1.0f, 4.0f));
+
+  quadShader->use();
+  quadShader->setMatrix4f("model", model);
+
+  glBindVertexArray(fdBottonVAO);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+  // Ceiling
+  model = glm::translate(model, glm::vec3(0.0f, 18.0f, 0.0f));
+
+  quadShader->use();
+  quadShader->setMatrix4f("model", model);
+
+  glBindVertexArray(fdCeilingVAO);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);  
+
+  // Wires
+  model = glm::scale(glm::mat4(1.0f), glm::vec3(4.0f, 18.0f, 4.0f));
   
   wireShader->use();
   wireShader->setMatrix4f("model", model);
@@ -163,6 +204,7 @@ void ModelRender::drawField(){
   glBindVertexArray(fdEdgesVAO);
   glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
 
+  // Internal Walls
   model = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 18.0f, 2.0f));
 
   quadShader->use();
@@ -170,4 +212,19 @@ void ModelRender::drawField(){
 
   glBindVertexArray(fdWallsVAO);
   glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
+}
+
+glm::vec3 ModelRender::getBlockColor(char colorInitial) {
+  switch(colorInitial)
+  {
+    case 'r' : return glm::vec3(0.8, 0.3, 0.3);
+    case 'g' : return glm::vec3(0.1, 0.8, 0.1);
+    case 'y' : return glm::vec3(0.9, 0.9, 0.0);
+    case 'n' : return glm::vec3(0.2, 0.4, 0.9);
+    case '0' : return glm::vec3(1.0, 0.5, 0.0);
+    case 'p' : return glm::vec3(0.7, 0.3, 0.8);
+    case 'b' : return glm::vec3(0.0, 0.7, 0.9);
+    case 'w' :
+    default: return glm::vec3(1.0, 1.0, 1.0);
+  }
 }

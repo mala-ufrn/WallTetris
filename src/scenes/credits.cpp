@@ -65,11 +65,17 @@ void Credits::draw() {
   glViewport(*widePadding, 0, winOrigDims.x * *scrFactor, winOrigDims.y * *scrFactor);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  backGround->draw(0.0f, 0.0f, glm::vec3(0.3f, 0.3f, 0.3f));
+  // draws Background
+  glDepthRange(0.5f, 1.0f);
+
+  backGround->draw(0.0f, 0.0f, glm::vec3(0.3f));
   
+  // draws UI
+  glDepthRange(0.0f, 0.5f);
+
   if (jspresent) {
-    sansPsx64->renderLeft("Press \\C to back", 25.0f, 25.0f, 0.35f, glm::vec3(1.0, 1.0, 1.0));
+    sansPsx64->renderLeft("Press \\C to back", 25.0f, 25.0f, 0.35f, glm::vec3(1.0f));
   } else {
-    sansKey64->renderLeft("Press \\e to back", 25.0f, 25.0f, 0.35f, glm::vec3(1.0, 1.0, 1.0));
+    sansKey64->renderLeft("Press \\e to back", 25.0f, 25.0f, 0.35f, glm::vec3(1.0f));
   }
 }

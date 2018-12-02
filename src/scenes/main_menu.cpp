@@ -99,14 +99,14 @@ void MainMenu::processInputs(GLFWwindow *window) {
 
 void MainMenu::update() {
   float hue = (float)((int)(glfwGetTime() * 24) % 360);
-  float sat = 1.0;
-  float val = 1.0;
+  float sat = 1.0f;
+  float val = 1.0f;
   
-  int hi = int(hue / 60.0) % 6;
-  float f = hue / 60.0 - float(hi);
-  float p = val * (1.0 - sat);
-  float q = val * (1.0 - sat * f);
-  float t = val * (1.0 - sat * (1.0 - f));
+  int hi = int(hue / 60.0f) % 6;
+  float f = hue / 60.0f - float(hi);
+  float p = val * (1.0f - sat);
+  float q = val * (1.0f - sat * f);
+  float t = val * (1.0f - sat * (1.0f - f));
   
   if (hi == 0) {
     titleRgb = glm::vec3(val, t, p);
@@ -129,19 +129,24 @@ void MainMenu::draw() {
   glViewport(*widePadding, 0, winOrigDims.x * *scrFactor, winOrigDims.y * *scrFactor);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  backGround->draw(0.0f, 0.0f, glm::vec3(0.3f, 0.3f, 0.3f));
+  // draws Background
+  glDepthRange(0.5f, 1.0f);
+
+  backGround->draw(0.0f, 0.0f, glm::vec3(0.3f));
   trumpImage->draw(362.0f, 0.0f);
+
+  // draws UI
+  glDepthRange(0.0f, 0.5f);
 
   glm::vec3 white(0.8f, 0.8f, 0.8f);
   glm::vec3 yellow(0.8f, 0.8f, 0.0f);
-
   soapStore200->renderLeft("WALLTETRIS", 25.0f, 450.0f, 0.7f, titleRgb);
-  sansPsx64->renderLeft("\\!", 40.0f + arrowAnim, 303.0f - selected*60, 0.6f, glm::vec3(1.0, 1.0, 0.0));
+  sansPsx64->renderLeft("\\!", 40.0f + arrowAnim, 303.0f - selected*60, 0.6f, glm::vec3(1.0f, 1.0f, 0.0f));
   soapStore200->renderLeft("Endless mode", 85.0f, 300.0f, 0.28f, !selected? yellow : white);
   soapStore200->renderLeft("Credits", 85.0f, 240.0f, 0.28f, selected? yellow : white);
   if (jspresent) {
-    sansPsx64->renderLeft("Press \\X to select", 25.0f, 25.0f, 0.35f, glm::vec3(1.0, 1.0, 1.0));
+    sansPsx64->renderLeft("Press \\X to select", 25.0f, 25.0f, 0.35f, glm::vec3(1.0f));
   } else {
-    sansKey64->renderLeft("Press \\f to select", 25.0f, 25.0f, 0.35f, glm::vec3(1.0, 1.0, 1.0));
+    sansKey64->renderLeft("Press \\f to select", 25.0f, 25.0f, 0.35f, glm::vec3(1.0f));
   }
 }
