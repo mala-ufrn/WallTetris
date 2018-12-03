@@ -89,7 +89,9 @@ private:
   //
   int value;
   //
-  double lastTime;
+  double lastTimeMoveDown;
+  //
+  double lastTimeKeyboard;
 
 
 public:

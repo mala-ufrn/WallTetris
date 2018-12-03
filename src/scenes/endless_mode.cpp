@@ -118,7 +118,8 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
   value = 0;
 
   speedUp = false;
-  lastTime = glfwGetTime();
+  lastTimeMoveDown = glfwGetTime();
+  lastTimeKeyboard = glfwGetTime();
 }
 
 EndlessMode::~EndlessMode() {
@@ -204,6 +205,9 @@ void EndlessMode::updateActivePiece(Drawable *piece, glm::ivec2 pos) {
 
 void EndlessMode::processInputs(GLFWwindow *window) {
 
+  if (glfwGetTime() <= lastTimeKeyboard + 0.05) return;
+  lastTimeKeyboard = glfwGetTime();
+
   if (glfwJoystickPresent(GLFW_JOYSTICK_2)) {
     jspresent = true;
     //TODO
@@ -281,8 +285,8 @@ void EndlessMode::rollCamera() {
 
 void EndlessMode::update() {
   float refreshTime = speedUp ? 0.05 : 0.5;
-  if (glfwGetTime() > lastTime + refreshTime) {
-    lastTime = glfwGetTime();
+  if (glfwGetTime() > lastTimeMoveDown + refreshTime) {
+    lastTimeMoveDown = glfwGetTime();
     if(playing && !paused) {
       activeTetr->moveDown();
     }
