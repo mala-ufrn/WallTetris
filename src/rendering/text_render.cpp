@@ -1,4 +1,4 @@
-#include "../include/text_render.h"
+#include "rendering/text_render.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H 
@@ -6,11 +6,13 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <vector>
 
 TextRender::TextRender(Shader* textShader, const char* charfontPath, int fontSize){
   this->textShader = textShader;
 
   buildTextureAtlas(charfontPath, &charsTexture, fontSize, &charactersAtlas, &charsAtlasWidth, &charsAtlasHeight);
+  iconsTexture = 0;
 
   glGenBuffers(1, &txtVBO);
   glGenVertexArrays(1, &txtVAO);
@@ -40,6 +42,13 @@ TextRender::TextRender(Shader* textShader, const char* charfontPath, const char*
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
   glEnableVertexAttribArray(1);
+}
+
+TextRender::~TextRender(){
+  glDeleteTextures(1, &charsTexture);
+  glDeleteTextures(1, &iconsTexture);
+  glDeleteBuffers(1, &txtVBO);
+  glDeleteVertexArrays(1, &txtVAO);
 }
 
 void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color){
@@ -92,6 +101,11 @@ void TextRender::renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scal
       { xpos + w, ypos,       ch.texcoord.x + ch.size.x / *atlasWidth, ch.texcoord.y + ch.size.y / *atlasHeight},
       { xpos + w, ypos + h,   ch.texcoord.x + ch.size.x / *atlasWidth, ch.texcoord.y}
     };
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // bind texture
     glBindTexture(GL_TEXTURE_2D, *texture);
@@ -164,12 +178,8 @@ void TextRender::buildTextureAtlas(const char* ttfPath, GLuint* texture, int fon
   glBindTexture(GL_TEXTURE_2D, *texture);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  std::vector<GLubyte> emptyData(width * height, 0);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, &emptyData[0]);
 
   int offsetX = 0,
       offsetY = 0;
@@ -204,6 +214,7 @@ void TextRender::buildTextureAtlas(const char* ttfPath, GLuint* texture, int fon
     offsetX += g->bitmap.width + 1;
   }
 
+  glGenerateMipmap(GL_TEXTURE_2D);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 4); // Restore byte-aligment restriction
 
   FT_Done_Face(face);

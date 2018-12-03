@@ -1,12 +1,5 @@
 # Executable
 game
 
-# Legacy (temporary)
-*(cópia)/
-
 # Compiled Object files
-bin/
-*.slo
-*.lo
 *.o
-*.obj

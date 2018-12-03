@@ -1,9 +1,11 @@
-#include "../include/image_render.h"
+#include "rendering/image_render.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
-#include "../include/stb_image.h"
+#include "utils/stb_image.h"
+#endif
 
 #include <fstream>
 #include <sstream>
@@ -19,11 +21,6 @@ ImageRender::ImageRender(Shader* imageShader, const char* imagePath, GLfloat wid
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texture);
-  // set the texture wrapping/filtering options (on the currently bound texture object)
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   
   // load and generate the texture
   int txWidth,
@@ -59,10 +56,16 @@ ImageRender::ImageRender(Shader* imageShader, const char* imagePath, GLfloat wid
   glEnableVertexAttribArray(1);
 }
 
+ImageRender::~ImageRender(){
+  glDeleteTextures(1, &texture);
+  glDeleteBuffers(1, &VBO);
+  glDeleteBuffers(1, &EBO);
+  glDeleteVertexArrays(1, &VAO);
+}
+
 void ImageRender::draw(GLfloat x, GLfloat y, glm::vec3 color){
   // translate the figure  
-  glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(model, glm::vec3(x, y, 0));
+  glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0));
 
   imageShader->use();
   imageShader->setMatrix4f("model", model);
@@ -70,6 +73,12 @@ void ImageRender::draw(GLfloat x, GLfloat y, glm::vec3 color){
   
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texture);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER); 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  
   glBindVertexArray(VAO);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

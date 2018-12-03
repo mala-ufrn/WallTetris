@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 
-#include "shader.h"
+#include "utils/shader.h"
 
 #define ATLAS_MAXWIDTH 1024
 
@@ -38,6 +38,7 @@ private:
 public:
   TextRender(Shader* textShader, const char* charfontPath, int fontSize);
   TextRender(Shader* textShader, const char* charfontPath, const char* iconfontPath, int fontSize);
+  ~TextRender();
 
   void renderLeft(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
 private:

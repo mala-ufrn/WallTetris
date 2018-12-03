@@ -104,6 +104,14 @@ public:
     glUniform3f(glGetUniformLocation(ID, name.c_str()), value0, value1, value2);
   }
 
+  void setVector4f(const std::string &name, const glm::vec4 &values) const {
+    glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(values));
+  }
+
+  void setVector4f(const std::string &name, float value0, float value1, float value2, float value3) {
+    glUniform4f(glGetUniformLocation(ID, name.c_str()), value0, value1, value2, value3);
+  }
+
   void setMatrix4f(const std::string &name, const glm::mat4 &values) const {
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(values));
   }
