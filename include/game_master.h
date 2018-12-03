@@ -6,6 +6,7 @@ public:
   virtual void createNextTetr(int posX) = 0;
   virtual void increaseScore(int value) = 0;
   virtual void increaseLines(int quantity) = 0;
+  virtual void gameOver() = 0;
 };
 
 #endif

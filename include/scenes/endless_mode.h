@@ -65,8 +65,9 @@ public:
   EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);
   ~EndlessMode();
   void createNextTetr(int posX);
-  void increaseScore(int value){ score += value; }
+  void increaseScore(int value);
   void increaseLines(int quantity);
+  void gameOver();
   void processInputs(GLFWwindow *window);
   void update();
   void draw();

@@ -1,4 +1,4 @@
-#include "../include/field.h"
+#include "models/field.h"
 
 #include <stdlib.h>
 #include <iostream>
@@ -6,16 +6,15 @@
 #define FIELD_NUM_ROWS 19
 #define FIELD_NUM_COLS 12
 
-Field::Field(Master *master, Drawer* drawer) {
+Field::Field(GameMaster *master) {
   this->master = master;
-  this->drawer = drawer;
   
-  shape = vector<vector<char>>(FIELD_NUM_ROWS,vector<char> (FIELD_NUM_COLS, 0));
+  shape = std::vector<std::vector<char>>(FIELD_NUM_ROWS,std::vector<char> (FIELD_NUM_COLS, 0));
 }
 
 Field::~Field() {}
 
-void Field::attachTetromino(vector<vector<char>> tetrShape, int x, int y) {
+void Field::attachTetromino(std::vector<std::vector<char>> tetrShape, int x, int y) {
   for(int i = y; i < y + tetrShape.size(); i++) {
     for(int j = x; j < x + tetrShape[0].size(); j++) {
       if(tetrShape[i-y][j-x] != 0) {
@@ -23,7 +22,7 @@ void Field::attachTetromino(vector<vector<char>> tetrShape, int x, int y) {
       }
     }
   }
-  drawer->updateField(this);
+  //drawer->updateField(this);
   checkLines();
   master->createNextTetr(x);
 }
@@ -53,9 +52,9 @@ void Field::clearLine(int level) {
       shape[i][j] = shape[i - 1][j];
     }
   }
-  drawer->updateField(this);
+  //drawer->updateField(this);
 }
 
-vector<vector<char>> Field::getShape() {
+std::vector<std::vector<char>> Field::getShape() {
   return shape;
 }

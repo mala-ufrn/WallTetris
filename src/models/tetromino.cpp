@@ -1,12 +1,9 @@
-#include "../include/tetromino.h"
+#include "models/tetromino.h"
 
+#include <ctime>
 #include <stdlib.h>
 
-#include "../include/utils.h"
-
-mutex Tetromino::tetrMutex;
-
-const vector<vector<vector<char>>> Tetromino::SHAPES = {
+const std::vector<std::vector<std::vector<char>>> Tetromino::SHAPES = {
   //Type I
   {{0, 0, 0, 0}, {'p', 'p', 'p', 'p'}, {0, 0, 0, 0}, {0, 0, 0, 0}},
   //Type J
@@ -23,12 +20,13 @@ const vector<vector<vector<char>>> Tetromino::SHAPES = {
   {{0, 0, 0, 0}, {'y', 'y', 'y', 0}, {0, 'y', 0, 0}, {0, 0, 0, 0}}
 };
 
-Tetromino::Tetromino(Field* field, Master* master, Drawer* drawer) {
+bool Tetromino::initSeed = false;
+
+Tetromino::Tetromino(Field* field, GameMaster* master) {
   this->field = field;
   this->master = master;
-  this->drawer = drawer;
 
-  type = Utils::randNum(SHAPES.size()); // Define type
+  type = randType(); // Define type
 
   shape = SHAPES[type];
 }
@@ -36,85 +34,84 @@ Tetromino::Tetromino(Field* field, Master* master, Drawer* drawer) {
 Tetromino::~Tetromino() {}
 
 void Tetromino::init(int xPos){
-  x = xPos;
-  y = 0;
+  pos.x = xPos;
+  pos.y = 0;
   //Draw the tetromino on start position
-  drawer->updateActivePiece(this, x, y);
+  //drawer->updateActivePiece(this, x, y);
 
   //Check the entry for game over condition
-  if(!dontHasConflict(shape, field, x, y)) {
+  if(!dontHasConflict(shape, pos.x, pos.y)) {
     master->gameOver();
   }
   
   // Stores the clock measure
-  clockCheckPoint = clock();
+  //clockCheckPoint = clock();
 }
 
 void Tetromino::pause() {
-  pauseOffSet = clock() - clockCheckPoint;
+  //pauseOffSet = clock() - clockCheckPoint;
 }
 
 void Tetromino::resume() {
-  clockCheckPoint = clock() - pauseOffSet;
-  drawer->updateActivePiece(this, x, y);
+  //clockCheckPoint = clock() - pauseOffSet;
+  //drawer->updateActivePiece(this, x, y);
 }
 
 void Tetromino::moveLeft(){
-  tetrMutex.lock();
-  if(dontHasConflict(shape, field, x - 1, y)) {
-    x = x == 0? 11 : x-1;
-    drawer->updateActivePiece(this, x, y);
+
+  if(dontHasConflict(shape, pos.x - 1, pos.y)) {
+    pos.x = pos.x == 0? 11 : pos.x-1;
+    //drawer->updateActivePiece(this, x, y);
   }
-  tetrMutex.unlock();
+
 }
 
 void Tetromino::moveRight(){
-  tetrMutex.lock();
-  if(dontHasConflict(shape, field, x + 1, y)) {
-    x = (x+1)%12;
-    drawer->updateActivePiece(this, x, y);
+  if(dontHasConflict(shape, pos.x + 1, pos.y)) {
+    pos.x = (pos.x + 1) % 12;
+    //drawer->updateActivePiece(this, x, y);
   }
-  tetrMutex.unlock();
 }
 
 void Tetromino::moveDown(){
-  tetrMutex.lock();
-  if(dontHasConflict(shape, field, x, y + 1)) {
-    drawer->updateActivePiece(this, x, ++y);
-    tetrMutex.unlock();
+
+  if(dontHasConflict(shape, pos.x, pos.y + 1)) {
+    pos.y += 1;
+    //drawer->updateActivePiece(this, x, y);  
   } else {
-    field->attachTetromino(shape, x, y);
-    tetrMutex.unlock();
+    field->attachTetromino(shape, pos.x, pos.y); 
     delete this;
   }
 }
 
 void Tetromino::rotate() {
-  tetrMutex.lock();
+
   if(type != 3) {
     int d = (type == 0)? 4 : 3;
-    vector<vector<char>> rotated(shape.size(), 
-                                          vector<char> (shape[0].size(), 0));
-    
+    std::vector<std::vector<char>> rotated(shape.size(), 
+                                 std::vector<char> (shape[0].size(), 0));
     for(int i = 0; i < d; i++) {
       for(int j = 0; j < d; j++) {
         rotated[d-1-j][i] = shape[i][j];
       }
     }
 
-    if (dontHasConflict(rotated, field, x, y)){
+    if (dontHasConflict(rotated, pos.x, pos.y)){
       shape = rotated;
-      drawer->updateActivePiece(this, x, y);
+      //drawer->updateActivePiece(this, x, y);
     }
   }
-  tetrMutex.unlock();
 }
 
-bool Tetromino::dontHasConflict(vector<vector<char>> shape, Field* field, int x, int y) {  
-  vector<vector<char>> fShape = field->getShape();
-  for(int i = 0; i < shape.size(); i++) {
-    for(int j = 0; j < shape[0].size(); j++) {
-      if (shape[i][j] != 0 && (outOfBounds(y+i, fShape.size()) || fShape[y+i][(x+j)%12] != 0)) {
+std::vector<std::vector<char>> Tetromino::getShape() {
+  return shape;
+}
+
+bool Tetromino::dontHasConflict(std::vector<std::vector<char>> testShape, int testX, int testY){  
+  std::vector<std::vector<char>> fShape = field->getShape();
+  for(int i = 0; i < testShape.size(); i++) {
+    for(int j = 0; j < testShape[0].size(); j++) {
+      if (testShape[i][j] != 0 && (fShape[testY+i][(testX+j)%12] != 0 || testY + i >= fShape.size())) {
         return false;
       }
     }
@@ -122,10 +119,12 @@ bool Tetromino::dontHasConflict(vector<vector<char>> shape, Field* field, int x,
   return true;
 }
 
-bool Tetromino::outOfBounds(int y, int fieldHeight) { 
-  return y >= fieldHeight; 
-}
+int Tetromino::randType() {
+  
+  if (!initSeed){
+    srand(unsigned(time(0)));
+    initSeed = true;
+  }
 
-vector<vector<char>> Tetromino::getShape() {
-  return shape;
+  return rand() % SHAPES.size();
 }
