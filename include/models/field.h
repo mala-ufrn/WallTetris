@@ -19,8 +19,6 @@ public:
   std::vector<std::vector<char>> getShape();
   // Attach the piece of shape at given position (x, y)
   void attachTetromino(std::vector<std::vector<char>> tetrShape, int x, int y);
-  // Prints the well
-  void print();
 private:
   // Check if there are complete lines
   void checkLines();

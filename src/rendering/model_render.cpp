@@ -221,7 +221,7 @@ glm::vec3 ModelRender::getBlockColor(char colorInitial) {
     case 'g' : return glm::vec3(0.1, 0.8, 0.1);
     case 'y' : return glm::vec3(0.9, 0.9, 0.0);
     case 'n' : return glm::vec3(0.2, 0.4, 0.9);
-    case '0' : return glm::vec3(1.0, 0.5, 0.0);
+    case 'o' : return glm::vec3(1.0, 0.5, 0.0);
     case 'p' : return glm::vec3(0.7, 0.3, 0.8);
     case 'b' : return glm::vec3(0.0, 0.7, 0.9);
     case 'w' :

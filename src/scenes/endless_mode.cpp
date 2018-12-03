@@ -20,8 +20,8 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
   level = 1;
   lines = 0;
 
-  field = NULL;
-  nextTetr = NULL;
+  field = new Field(this);
+  nextTetr = new Tetromino(field, this);
   activeTetr = NULL;
 
 	winOrigDims = win_dimentions;
@@ -114,8 +114,18 @@ EndlessMode::~EndlessMode() {
   delete uiBlockShader;
 }
 
-void EndlessMode::createNextTetr(int posX) {
+void EndlessMode::createNextTetr(int posX){
+  activeTetr = nextTetr;
+  nextTetr = new Tetromino(field, this);
+}
 
+void EndlessMode::increaseScore(int value){
+  
+  score += value;
+
+  if (highScore < score) {
+    highScore = score;
+  }
 }
 
 void EndlessMode::increaseLines(int quantity){ 
@@ -128,6 +138,10 @@ void EndlessMode::increaseLines(int quantity){
   else {
     level = 10;
   }
+}
+
+void EndlessMode::gameOver() {
+
 }
 
 void EndlessMode::processInputs(GLFWwindow *window) {
@@ -149,7 +163,7 @@ void EndlessMode::update() {
 }
 
 void EndlessMode::draw() {
-  
+
   glViewport(*widePadding, 0, winOrigDims.x * *scrFactor, winOrigDims.y * *scrFactor);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -164,13 +178,10 @@ void EndlessMode::draw() {
   glViewport(*widePadding + (145 * *scrFactor), 0, 300 * *scrFactor, winOrigDims.y * *scrFactor);
   gameModelRender->drawField();
 
-  // Place holder
-  std::vector<std::vector<char>> tetromino = {{0, 0, 0, 0}, {0, 'b', 'b', 0}, {0, 'b', 'b', 0}, {0, 0, 0, 0}};
-
   // draws UI
   glDepthRange(0.0f, 0.05f);
   glViewport(*widePadding + (520 * *scrFactor), 330 * *scrFactor, 180 * *scrFactor, 180 * *scrFactor);
-  uiModelRender->drawNext(tetromino);
+  uiModelRender->drawNext(nextTetr->getShape());
 
   glViewport(*widePadding, 0, winOrigDims.x * *scrFactor, winOrigDims.y * *scrFactor);
 

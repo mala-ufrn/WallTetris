@@ -1,20 +1,20 @@
 #ifndef TETROMINO_H_
 #define TETROMINO_H_
 
-#include <mutex>
 #include <vector>
+#include <glm/glm.hpp>
 
 #include "models/field.h"
 #include "game_master.h"
 
-class Tetromino{
+class Tetromino {
 private:
   static const std::vector<std::vector<std::vector<char>>> SHAPES;
-  std::mutex tetrMutex;
+  static bool initSeed;
 
-  int type,
-      x,
-      y;
+  int type;
+  glm::ivec2 pos;
+
   std::vector<std::vector<char>> shape;
   Field *field;
   GameMaster *master;
@@ -41,10 +41,10 @@ public:
   // Returns the tretomino shape by reference
   std::vector<std::vector<char>> getShape();
 private:
-  // Computes the active face Check
-  static bool outOfBounds(int y, int fieldHeight); 
   // Checks move validity
-  bool dontHasConflict();
+  bool dontHasConflict(std::vector<std::vector<char>> testShape, int testX, int testY);
+  // Gamble tetromino shape
+  static int randType();
 };
 
 #endif // TETROMINO_H_
