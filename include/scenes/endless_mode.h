@@ -88,6 +88,8 @@ private:
   Drawable* lastPiece;
   //
   int value;
+  //
+  double lastTime;
 
 
 public:

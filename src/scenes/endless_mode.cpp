@@ -116,6 +116,9 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
     fieldMatrix[i] = std::vector<char>(width*2 +length*2 - 4/*corners*/, 0);
   }
   value = 0;
+
+  speedUp = false;
+  lastTime = glfwGetTime();
 }
 
 EndlessMode::~EndlessMode() {
@@ -207,6 +210,7 @@ void EndlessMode::processInputs(GLFWwindow *window) {
 
   } else {
     jspresent = false;
+    speedUp = false;
 
     bool keyPPressed = glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS;
     bool keyQPressed = glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS;
@@ -276,8 +280,12 @@ void EndlessMode::rollCamera() {
 }
 
 void EndlessMode::update() {
-  if(playing && !paused) {
-    activeTetr->moveDown();
+  float refreshTime = speedUp ? 0.05 : 0.5;
+  if (glfwGetTime() > lastTime + refreshTime) {
+    lastTime = glfwGetTime();
+    if(playing && !paused) {
+      activeTetr->moveDown();
+    }
   }
 }
 
