@@ -125,6 +125,9 @@ void MainMenu::update() {
   arrowAnim = sin(glfwGetTime() * 5) * 5;
 }
 
+void MainMenu::rollCamera() {
+}
+
 void MainMenu::draw() {
   glViewport(*widePadding, 0, winOrigDims.x * *scrFactor, winOrigDims.y * *scrFactor);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

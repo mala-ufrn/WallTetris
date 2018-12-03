@@ -9,6 +9,9 @@
 
 #define PI 3.14159265
 
+#define DISTANCE 30
+#define VER_ANGLE 30
+
 EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
 
   this->sceneMaster = sceneMaster;
@@ -45,7 +48,10 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
 
   glm::mat4 perspProj = glm::perspective(glm::radians(45.0f), 0.42f, 0.1f, 80.0f);
 
-  glm::mat4 view = glm::lookAt(glm::vec3(cos(25 * PI / 180.0f) * 30.0f, sin(25 * PI / 180.0f) * 30.0f, 0),
+  float x = sin(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
+  float y = sin(VER_ANGLE * PI / 180.0) * DISTANCE;
+  float z = cos(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
+  glm::mat4 view = glm::lookAt(glm::vec3(x, y, z),
                                glm::vec3(0.0f, 9.0f, 0.0f),
                                glm::vec3(0.0, 1.0, 0.0));
 
@@ -93,6 +99,21 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
 
   gameModelRender = new ModelRender(quadShader, gameWireShader, gameBlockShader);
   uiModelRender = new ModelRender(quadShader, uiWireShader, uiBlockShader);
+
+
+
+  std::string playerStr = "Player: Player01" ;
+  playerStr.copy(playerLabel, playerStr.size());
+  strncpy(scoreLabel, "Score: 0", 8);
+  height = field->getShape().size();
+  width = 4.0;
+  length = 4.0;
+
+  fieldMatrix = std::vector<std::vector<char>>(height);
+  for (int i = 0; i < height; ++i) {
+    fieldMatrix[i] = std::vector<char>(width*2 +length*2 - 4/*corners*/, 0);
+  }
+  value = 0;
 }
 
 EndlessMode::~EndlessMode() {
@@ -117,6 +138,7 @@ EndlessMode::~EndlessMode() {
 void EndlessMode::createNextTetr(int posX){
   activeTetr = nextTetr;
   nextTetr = new Tetromino(field, this);
+  activeTetr->init(posX);
 }
 
 void EndlessMode::increaseScore(int value){
@@ -141,25 +163,115 @@ void EndlessMode::increaseLines(int quantity){
 }
 
 void EndlessMode::gameOver() {
+  playing = false;
+}
 
+void EndlessMode::updateField(Drawable *field) {
+  fieldMatrix = field->getShape();
+}
+
+void EndlessMode::updateActivePiece(Drawable *piece, glm::ivec2 pos) {
+  std::vector<std::vector<char>> shape = piece->getShape();
+  int x = pos.x, y = pos.y;
+
+  // clear on last position/rotation;
+  if(piece == lastPiece)
+    for(int i = 0; i < lastShape.size(); i++)
+      for(int j = 0; j < lastShape.size(); j++)
+        if(lastShape[i][j] != 0)
+          fieldMatrix[lastY + i][(lastX + j)%12] = 0;
+
+  // draw the piece
+  for(int i = 0; i < shape.size(); i++) {
+    for(int j = 0; j < shape.size(); j++) {
+      if (y+i != 0 && shape[i][j] != 0) {
+        fieldMatrix[y + i][(x + j)%12] = shape[i][j];
+      }
+    }
+  }
+
+  //Memorize last values
+  lastShape = shape;
+  lastPiece = piece;
+  lastX = x;
+  lastY = y;
 }
 
 void EndlessMode::processInputs(GLFWwindow *window) {
 
   if (glfwJoystickPresent(GLFW_JOYSTICK_2)) {
     jspresent = true;
+    //TODO
 
   } else {
     jspresent = false;
 
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+    bool keyPPressed = glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS;
+    bool keyQPressed = glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS;
+
+    if (paused && !keyPPressed && !keyQPressed) return;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+      activeTetr->moveLeft();
+    } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+      activeTetr->moveRight();
+    } else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+      activeTetr->rotate();
+    } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+      speedUp = true;
+    } else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+      if(paused) {
+        paused = false;
+        updateField(field);
+        activeTetr->resume();
+      } else {
+        paused = true;
+        activeTetr->pause();
+      }
+    } else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+      exit(-1);
+    } else if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
       sceneMaster->goToMainMenu();
     }
   }
 }
 
+void EndlessMode::rollCamera() {
+  int camMove = 30, maxCamMove = 360/camMove + 1;
+  int targetAngle = ((int)lastX * camMove + 90) % 360;
+  horAngle = (value + (int)horAngle) % 360;
+  horAngle = horAngle < 0 ? 360 + horAngle : horAngle;
+  int signal = (abs(targetAngle - horAngle) <= 180) ? 1 : -1;
+  int velocity = signal == 1 ? 
+                 abs(targetAngle - horAngle)/camMove + 1
+                 : maxCamMove - abs(targetAngle - horAngle)/camMove;
+
+  if(targetAngle < horAngle)
+    value = -2*signal*velocity;
+  else if(targetAngle > horAngle)
+    value = 2*signal*velocity;
+  else
+    value = 0;
+
+
+  glm::mat4 perspProj = glm::perspective(glm::radians(45.0f), 0.42f, 0.1f, 80.0f);
+
+  float x = sin(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
+  float y = sin(VER_ANGLE * PI / 180.0) * DISTANCE;
+  float z = cos(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
+  glm::mat4 view = glm::lookAt(glm::vec3(x, y, z),
+                               glm::vec3(0.0f, 9.0f, 0.0f),
+                               glm::vec3(0.0, 1.0, 0.0));
+
+  gameBlockShader->use();
+  gameBlockShader->setMatrix4f("projection", perspProj);
+  gameBlockShader->setMatrix4f("view", view);
+
+}
+
 void EndlessMode::update() {
-  
+  if(!paused) {
+    activeTetr->moveDown();
+  }
 }
 
 void EndlessMode::draw() {
@@ -177,6 +289,7 @@ void EndlessMode::draw() {
   glDepthRange(0.05f, 0.95f);
   glViewport(*widePadding + (145 * *scrFactor), 0, 300 * *scrFactor, winOrigDims.y * *scrFactor);
   gameModelRender->drawField();
+  gameModelRender->drawTetris(fieldMatrix);
 
   // draws UI
   glDepthRange(0.0f, 0.05f);

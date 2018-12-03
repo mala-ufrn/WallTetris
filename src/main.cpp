@@ -67,9 +67,9 @@ int main(int argc, char *argv[]) {
 
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glClearDepth(1.0f);
-    
+  
+  glfwSetTime(0.0000);  
   while (!glfwWindowShouldClose(window)) {
-    
     game->execute(window);
 
     glfwSwapBuffers(window);

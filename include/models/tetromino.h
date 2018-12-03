@@ -7,7 +7,7 @@
 #include "models/field.h"
 #include "game_master.h"
 
-class Tetromino {
+class Tetromino : public Drawable {
 private:
   static const std::vector<std::vector<std::vector<char>>> SHAPES;
   static bool initSeed;

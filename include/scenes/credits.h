@@ -33,5 +33,6 @@ public:
   void processInputs(GLFWwindow *window);
   void update();
   void draw();
+  void rollCamera();
 };
 #endif

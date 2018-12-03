@@ -61,6 +61,9 @@ void Credits::processInputs(GLFWwindow *window) {
 void Credits::update() {
 }
 
+void Credits::rollCamera() {
+}
+
 void Credits::draw() {
   glViewport(*widePadding, 0, winOrigDims.x * *scrFactor, winOrigDims.y * *scrFactor);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -2,6 +2,7 @@
 #define ENDLESS_MODE_H
 
 #include <glm/glm.hpp>
+#include <vector>
 
 #include "scene.h"
 #include "scene_master.h"
@@ -19,6 +20,8 @@ private:
 
   bool jspresent;
 
+  //Update current refresh time (ms)
+  bool speedUp;
   // Flag for new game
   bool playing;
   // Flag for pause
@@ -61,6 +64,32 @@ private:
               *uiModelRender;
 
 
+  //Height of Wall Tetris
+  int height;
+  //Width of Wall Tetris
+  int width;
+  //Length of Wall Tetris
+  int length;
+  //Angle of horizontal visualization
+  float horAngle;
+  //Player name
+  char playerLabel[60];
+  //Player score
+  char scoreLabel[20];
+  //Matrix of Wall Tetrix
+  std::vector<std::vector<char>> fieldMatrix;
+  //Piece last x
+  int lastX;
+  //Piece last y
+  int lastY;
+  //Piece last shape
+  std::vector<std::vector<char>> lastShape;
+  //active piece reference
+  Drawable* lastPiece;
+  //
+  int value;
+
+
 public:
   EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);
   ~EndlessMode();
@@ -68,7 +97,10 @@ public:
   void increaseScore(int value);
   void increaseLines(int quantity);
   void gameOver();
+  void updateField(Drawable *field);
+  void updateActivePiece(Drawable *piece, glm::ivec2 pos);
   void processInputs(GLFWwindow *window);
+  void rollCamera();
   void update();
   void draw();
 };

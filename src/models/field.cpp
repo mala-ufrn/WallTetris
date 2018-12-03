@@ -22,7 +22,7 @@ void Field::attachTetromino(std::vector<std::vector<char>> tetrShape, int x, int
       }
     }
   }
-  //drawer->updateField(this);
+  master->updateField(this);
   checkLines();
   master->createNextTetr(x);
 }
@@ -52,7 +52,7 @@ void Field::clearLine(int level) {
       shape[i][j] = shape[i - 1][j];
     }
   }
-  //drawer->updateField(this);
+  master->updateField(this);
 }
 
 std::vector<std::vector<char>> Field::getShape() {

@@ -44,7 +44,7 @@ public:
   }
 
   void goToEndless(){
-    
+    endlessMode->createNextTetr(0);
     currentScene = endlessMode;
   }
 
@@ -54,6 +54,7 @@ public:
 
   void execute(GLFWwindow *window){
     currentScene->processInputs(window);
+    currentScene->rollCamera();
     currentScene->update();
     currentScene->draw();
   }

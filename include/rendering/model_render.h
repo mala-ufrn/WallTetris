@@ -168,9 +168,11 @@ public:
 
   void drawField();
   void drawNext(std::vector<std::vector<char>> nextTetr);
+  void drawTetris(std::vector<std::vector<char>> field);
 
 private:
   glm::vec3 getBlockColor(char colorInitial);
+  char getColorPosition(int x, int y, int z, int width, int length, std::vector<std::vector<char>> field);
 };
 
 #endif

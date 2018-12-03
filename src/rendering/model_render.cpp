@@ -214,6 +214,38 @@ void ModelRender::drawField(){
   glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
 }
 
+void ModelRender::drawTetris(std::vector<std::vector<char>> field){
+  //Draws the field and active tetrominoes
+  int height = field.size();
+  int width = 4.0;
+  int length = 4.0;
+  for(int i = 0; i < width; i++){
+    for(int j = 0; j < height; j++){
+      for (int z = 0; z < length; z++){
+        if (i == 0 || i == width-1 || z == 0 || z == length-1){
+          char colorPosition = getColorPosition(i,j,z, width, length, field);
+          if (colorPosition != 0){
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(width-z-3, height-j-1, length-i-3));
+            
+            blockShader->use();
+            blockShader->setMatrix4f("model", model);
+            blockShader->setVector3f("objectColor", getBlockColor(colorPosition));
+            
+            glBindVertexArray(cubeVAO);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            wireShader->use();
+            wireShader->setMatrix4f("model", model);
+            wireShader->setVector4f("wireColor", 0.0f, 0.0f, 0.0f, 1.0f);
+            glBindVertexArray(cbEdgesVAO);
+            glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
+          }
+        }
+      } 
+    }
+  }
+}
+
 glm::vec3 ModelRender::getBlockColor(char colorInitial) {
   switch(colorInitial)
   {
@@ -227,4 +259,16 @@ glm::vec3 ModelRender::getBlockColor(char colorInitial) {
     case 'w' :
     default: return glm::vec3(1.0, 1.0, 1.0);
   }
+}
+
+char ModelRender::getColorPosition(int x, int y, int z, int width, int length, std::vector<std::vector<char>> fieldMatrix) {
+  if (z == 0)
+    return fieldMatrix[y][x];
+  else if (x == width - 1)
+    return fieldMatrix[y][x+z];
+  else if (z == length - 1)
+    return fieldMatrix[y][width*length-4-x-z];
+  else if (x == 0)
+    return fieldMatrix[y][width*length-4-z];
+  return 0;
 }

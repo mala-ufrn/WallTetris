@@ -3,6 +3,8 @@
 #include <ctime>
 #include <stdlib.h>
 
+#include <iostream>
+
 const std::vector<std::vector<std::vector<char>>> Tetromino::SHAPES = {
   //Type I
   {{0, 0, 0, 0}, {'p', 'p', 'p', 'p'}, {0, 0, 0, 0}, {0, 0, 0, 0}},
@@ -37,7 +39,7 @@ void Tetromino::init(int xPos){
   pos.x = xPos;
   pos.y = 0;
   //Draw the tetromino on start position
-  //drawer->updateActivePiece(this, x, y);
+  master->updateActivePiece(this, pos);
 
   //Check the entry for game over condition
   if(!dontHasConflict(shape, pos.x, pos.y)) {
@@ -54,14 +56,14 @@ void Tetromino::pause() {
 
 void Tetromino::resume() {
   //clockCheckPoint = clock() - pauseOffSet;
-  //drawer->updateActivePiece(this, x, y);
+  master->updateActivePiece(this, pos);
 }
 
 void Tetromino::moveLeft(){
 
   if(dontHasConflict(shape, pos.x - 1, pos.y)) {
     pos.x = pos.x == 0? 11 : pos.x-1;
-    //drawer->updateActivePiece(this, x, y);
+    master->updateActivePiece(this, pos);
   }
 
 }
@@ -69,15 +71,14 @@ void Tetromino::moveLeft(){
 void Tetromino::moveRight(){
   if(dontHasConflict(shape, pos.x + 1, pos.y)) {
     pos.x = (pos.x + 1) % 12;
-    //drawer->updateActivePiece(this, x, y);
+    master->updateActivePiece(this, pos);
   }
 }
 
 void Tetromino::moveDown(){
-
   if(dontHasConflict(shape, pos.x, pos.y + 1)) {
     pos.y += 1;
-    //drawer->updateActivePiece(this, x, y);  
+    master->updateActivePiece(this, pos);  
   } else {
     field->attachTetromino(shape, pos.x, pos.y); 
     delete this;
@@ -98,7 +99,7 @@ void Tetromino::rotate() {
 
     if (dontHasConflict(rotated, pos.x, pos.y)){
       shape = rotated;
-      //drawer->updateActivePiece(this, x, y);
+      master->updateActivePiece(this, pos);
     }
   }
 }
@@ -111,7 +112,7 @@ bool Tetromino::dontHasConflict(std::vector<std::vector<char>> testShape, int te
   std::vector<std::vector<char>> fShape = field->getShape();
   for(int i = 0; i < testShape.size(); i++) {
     for(int j = 0; j < testShape[0].size(); j++) {
-      if (testShape[i][j] != 0 && (fShape[testY+i][(testX+j)%12] != 0 || testY + i >= fShape.size())) {
+      if (testShape[i][j] != 0 && (testY + i >= fShape.size() || fShape[testY+i][(testX+j)%12] != 0)) {
         return false;
       }
     }

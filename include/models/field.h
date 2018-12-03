@@ -5,7 +5,7 @@
 
 #include "game_master.h"
 
-class Field {
+class Field : public Drawable {
 private:
   std::vector<std::vector<char>> shape;
   GameMaster* master;
