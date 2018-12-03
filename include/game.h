@@ -14,6 +14,8 @@ class Game : public SceneMaster {
   float *scrFactor,
         *widePadding;
 
+  double lastTime;
+
   glm::vec2 winOrigDims;
 
   Scene *currentScene;
@@ -31,6 +33,8 @@ public:
     credits = new Credits(this, win_dimentions, scrFact, wdPadd);
     endlessMode = new EndlessMode(this, winOrigDims, scrFactor, widePadding);
     currentScene = mainMenu;
+
+    lastTime = glfwGetTime();
   }
 
   ~Game(){
@@ -55,7 +59,10 @@ public:
   void execute(GLFWwindow *window){
     currentScene->processInputs(window);
     currentScene->rollCamera();
-    currentScene->update();
+    if (glfwGetTime() > lastTime + 0.5) {
+      lastTime = glfwGetTime();
+      currentScene->update();
+    }
     currentScene->draw();
   }
 };

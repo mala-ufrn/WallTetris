@@ -31,6 +31,8 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
 	scrFactor = scrFact;
 	widePadding = wdPadd;
 
+  horAngle = 0;
+
   textShader = new Shader("res/shaders/text_shader.vs", "res/shaders/text_shader.fs");
   imageShader = new Shader("res/shaders/image_shader.vs", "res/shaders/image_shader.fs");
   quadShader = new Shader("res/shaders/quad_shader.vs", "res/shaders/quad_shader.fs");
@@ -51,27 +53,29 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
   float x = sin(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
   float y = sin(VER_ANGLE * PI / 180.0) * DISTANCE;
   float z = cos(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
-  glm::mat4 view = glm::lookAt(glm::vec3(x, y, z),
+
+  glm::vec3 camPos = glm::vec3(x, y, z);
+
+  glm::mat4 view = glm::lookAt(camPos,
                                glm::vec3(0.0f, 9.0f, 0.0f),
                                glm::vec3(0.0, 1.0, 0.0));
-
-  gameWireShader->use();
-  gameWireShader->setMatrix4f("projection", perspProj);
-  gameWireShader->setMatrix4f("view", view);
-
-  gameWireShader->use();
-  gameWireShader->setMatrix4f("projection", perspProj);
-  gameWireShader->setMatrix4f("view", view);
 
   gameBlockShader->use();
   gameBlockShader->setMatrix4f("projection", perspProj);
   gameBlockShader->setMatrix4f("view", view);
+  gameBlockShader->setVector3f("viewPos", camPos);
+  gameBlockShader->setVector3f("lightPos", 0.0f, 30.0f, 20.0f);
+  gameBlockShader->setVector3f("lightColor", glm::vec3(1.0f));
+
+  gameWireShader->use();
+  gameWireShader->setMatrix4f("projection", perspProj);
+  gameWireShader->setMatrix4f("view", view);
 
   quadShader->use();
   quadShader->setMatrix4f("projection", perspProj);
   quadShader->setMatrix4f("view", view);
 
-  glm::vec3 camPos = glm::vec3(0.0f, sin(15 * PI / 180.0f) * 8.0f, cos(15 * PI / 180.0f) * 8.0f);
+  camPos = glm::vec3(0.0f, sin(15 * PI / 180.0f) * 8.0f, cos(15 * PI / 180.0f) * 8.0f);
 
   perspProj = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 80.0f);
 
@@ -99,8 +103,6 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
 
   gameModelRender = new ModelRender(quadShader, gameWireShader, gameBlockShader);
   uiModelRender = new ModelRender(quadShader, uiWireShader, uiBlockShader);
-
-
 
   std::string playerStr = "Player: Player01" ;
   playerStr.copy(playerLabel, playerStr.size());
@@ -252,24 +254,29 @@ void EndlessMode::rollCamera() {
   else
     value = 0;
 
-
-  glm::mat4 perspProj = glm::perspective(glm::radians(45.0f), 0.42f, 0.1f, 80.0f);
-
   float x = sin(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
   float y = sin(VER_ANGLE * PI / 180.0) * DISTANCE;
   float z = cos(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
-  glm::mat4 view = glm::lookAt(glm::vec3(x, y, z),
+
+  glm::vec3 camPos = glm::vec3(x, y, z);
+
+  glm::mat4 view = glm::lookAt(camPos,
                                glm::vec3(0.0f, 9.0f, 0.0f),
                                glm::vec3(0.0, 1.0, 0.0));
 
-  gameBlockShader->use();
-  gameBlockShader->setMatrix4f("projection", perspProj);
-  gameBlockShader->setMatrix4f("view", view);
+  gameWireShader->use();
+  gameWireShader->setMatrix4f("view", view);
 
+  quadShader->use();
+  quadShader->setMatrix4f("view", view);
+
+  gameBlockShader->use();
+  gameBlockShader->setMatrix4f("view", view);
+  gameBlockShader->setVector3f("viewPos", camPos);
 }
 
 void EndlessMode::update() {
-  if(!paused) {
+  if(playing && !paused) {
     activeTetr->moveDown();
   }
 }
