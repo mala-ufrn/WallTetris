@@ -308,8 +308,8 @@ void EndlessMode::draw() {
   // draws Models
   glDepthRange(0.05f, 0.95f);
   glViewport(*widePadding + (145 * *scrFactor), 0, 300 * *scrFactor, winOrigDims.y * *scrFactor);
-  gameModelRender->drawField();
   gameModelRender->drawTetris(fieldMatrix);
+  gameModelRender->drawField();
 
   // draws UI
   glDepthRange(0.0f, 0.05f);
