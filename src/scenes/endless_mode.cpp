@@ -160,8 +160,8 @@ void EndlessMode::increaseLines(int quantity){
 
   lines += quantity;
 
-  if (lines > 1 && lines <= 90) {
-    level = 1 + (lines-1)/10;
+  if (lines >= 1 && lines <= 90) {
+    level = 1 + lines/10;
   }
   else {
     level = 10;
@@ -205,7 +205,7 @@ void EndlessMode::updateActivePiece(Drawable *piece, glm::ivec2 pos) {
 
 void EndlessMode::processInputs(GLFWwindow *window) {
 
-  if (glfwGetTime() <= lastTimeKeyboard + 0.05) return;
+  if (glfwGetTime() <= lastTimeKeyboard + 0.1) return;
   lastTimeKeyboard = glfwGetTime();
 
   if (glfwJoystickPresent(GLFW_JOYSTICK_2)) {
@@ -284,7 +284,8 @@ void EndlessMode::rollCamera() {
 }
 
 void EndlessMode::update() {
-  float refreshTime = speedUp ? 0.05 : 0.5;
+  float velocity = 0.5 - 0.05*(level-1);
+  float refreshTime = speedUp ? velocity/10 : velocity;
   if (glfwGetTime() > lastTimeMoveDown + refreshTime) {
     lastTimeMoveDown = glfwGetTime();
     if(playing && !paused) {

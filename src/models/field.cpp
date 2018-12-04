@@ -38,6 +38,7 @@ void Field::checkLines() {
     if (lineComplete) {
       //Add points!
       master->increaseScore(100);
+      master->increaseLines(1);
       //Down the lines above
       clearLine(i);
       i = i + 1;
