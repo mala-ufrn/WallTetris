@@ -36,47 +36,47 @@ private:
   GLfloat cubeVertices[288] = {
   // positions           // normal coords      // texture coords
   // Back face
-  0.01f, 0.01f, 0.01f,   0.0f,  0.0f, -1.0f,   1.0f, 0.0f, // bottom-right
-  0.99f, 0.99f, 0.01f,   0.0f,  0.0f, -1.0f,   0.0f, 1.0f, // top-left
-  0.99f, 0.01f, 0.01f,   0.0f,  0.0f, -1.0f,   0.0f, 0.0f, // bottom-left         
-  0.99f, 0.99f, 0.01f,   0.0f,  0.0f, -1.0f,   0.0f, 1.0f, // top-left
-  0.01f, 0.01f, 0.01f,   0.0f,  0.0f, -1.0f,   1.0f, 0.0f, // bottom-right
-  0.01f, 0.99f, 0.01f,   0.0f,  0.0f, -1.0f,   1.0f, 1.0f, // top-right
+  0.008f, 0.008f, 0.008f,   0.0f,  0.0f, -1.0f,   1.0f, 0.0f, // bottom-right
+  0.992f, 0.992f, 0.008f,   0.0f,  0.0f, -1.0f,   0.0f, 1.0f, // top-left
+  0.992f, 0.008f, 0.008f,   0.0f,  0.0f, -1.0f,   0.0f, 0.0f, // bottom-left         
+  0.992f, 0.992f, 0.008f,   0.0f,  0.0f, -1.0f,   0.0f, 1.0f, // top-left
+  0.008f, 0.008f, 0.008f,   0.0f,  0.0f, -1.0f,   1.0f, 0.0f, // bottom-right
+  0.008f, 0.992f, 0.008f,   0.0f,  0.0f, -1.0f,   1.0f, 1.0f, // top-right
   // Front face
-  0.01f, 0.01f, 0.99f,   0.0f,  0.0f,  1.0f,   0.0f, 0.0f, // bottom-left
-  0.99f, 0.01f, 0.99f,   0.0f,  0.0f,  1.0f,   1.0f, 0.0f, // bottom-right
-  0.99f, 0.99f, 0.99f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f, // top-right
-  0.99f, 0.99f, 0.99f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f, // top-right
-  0.01f, 0.99f, 0.99f,   0.0f,  0.0f,  1.0f,   0.0f, 1.0f, // top-left
-  0.01f, 0.01f, 0.99f,   0.0f,  0.0f,  1.0f,   0.0f, 0.0f, // bottom-left
+  0.008f, 0.008f, 0.992f,   0.0f,  0.0f,  1.0f,   0.0f, 0.0f, // bottom-left
+  0.992f, 0.008f, 0.992f,   0.0f,  0.0f,  1.0f,   1.0f, 0.0f, // bottom-right
+  0.992f, 0.992f, 0.992f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f, // top-right
+  0.992f, 0.992f, 0.992f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f, // top-right
+  0.008f, 0.992f, 0.992f,   0.0f,  0.0f,  1.0f,   0.0f, 1.0f, // top-left
+  0.008f, 0.008f, 0.992f,   0.0f,  0.0f,  1.0f,   0.0f, 0.0f, // bottom-left
   // Left face
-  0.01f, 0.99f, 0.99f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f, // top-right
-  0.01f, 0.99f, 0.01f,  -1.0f,  0.0f,  0.0f,   0.0f, 1.0f, // top-left
-  0.01f, 0.01f, 0.01f,  -1.0f,  0.0f,  0.0f,   0.0f, 0.0f, // bottom-left
-  0.01f, 0.01f, 0.01f,  -1.0f,  0.0f,  0.0f,   0.0f, 0.0f, // bottom-left
-  0.01f, 0.01f, 0.99f,  -1.0f,  0.0f,  0.0f,   1.0f, 0.0f, // bottom-right
-  0.01f, 0.99f, 0.99f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f, // top-right
+  0.008f, 0.992f, 0.992f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f, // top-right
+  0.008f, 0.992f, 0.008f,  -1.0f,  0.0f,  0.0f,   0.0f, 1.0f, // top-left
+  0.008f, 0.008f, 0.008f,  -1.0f,  0.0f,  0.0f,   0.0f, 0.0f, // bottom-left
+  0.008f, 0.008f, 0.008f,  -1.0f,  0.0f,  0.0f,   0.0f, 0.0f, // bottom-left
+  0.008f, 0.008f, 0.992f,  -1.0f,  0.0f,  0.0f,   1.0f, 0.0f, // bottom-right
+  0.008f, 0.992f, 0.992f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f, // top-right
   // Right face
-  0.99f, 0.99f, 0.99f,   1.0f,  0.0f,  0.0f,   0.0f, 1.0f, // top-left
-  0.99f, 0.01f, 0.01f,   1.0f,  0.0f,  0.0f,   1.0f, 0.0f, // bottom-right
-  0.99f, 0.99f, 0.01f,   1.0f,  0.0f,  0.0f,   1.0f, 1.0f, // top-right         
-  0.99f, 0.01f, 0.01f,   1.0f,  0.0f,  0.0f,   1.0f, 0.0f, // bottom-right
-  0.99f, 0.99f, 0.99f,   1.0f,  0.0f,  0.0f,   0.0f, 1.0f, // top-left
-  0.99f, 0.01f, 0.99f,   1.0f,  0.0f,  0.0f,   0.0f, 0.0f, // bottom-left     
+  0.992f, 0.992f, 0.992f,   1.0f,  0.0f,  0.0f,   0.0f, 1.0f, // top-left
+  0.992f, 0.008f, 0.008f,   1.0f,  0.0f,  0.0f,   1.0f, 0.0f, // bottom-right
+  0.992f, 0.992f, 0.008f,   1.0f,  0.0f,  0.0f,   1.0f, 1.0f, // top-right         
+  0.992f, 0.008f, 0.008f,   1.0f,  0.0f,  0.0f,   1.0f, 0.0f, // bottom-right
+  0.992f, 0.992f, 0.992f,   1.0f,  0.0f,  0.0f,   0.0f, 1.0f, // top-left
+  0.992f, 0.008f, 0.992f,   1.0f,  0.0f,  0.0f,   0.0f, 0.0f, // bottom-left     
   // Bottom face
-  0.01f, 0.01f, 0.01f,   0.0f, -1.0f,  0.0f,   0.0f, 0.0f, // bottom-left
-  0.99f, 0.01f, 0.01f,   0.0f, -1.0f,  0.0f,   1.0f, 0.0f, // bottom-right
-  0.99f, 0.01f, 0.99f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f, // top-right
-  0.99f, 0.01f, 0.99f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f, // top-right
-  0.01f, 0.01f, 0.99f,   0.0f, -1.0f,  0.0f,   0.0f, 1.0f, // top-left
-  0.01f, 0.01f, 0.01f,   0.0f, -1.0f,  0.0f,   0.0f, 0.0f, // bottom-left
+  0.008f, 0.008f, 0.008f,   0.0f, -1.0f,  0.0f,   0.0f, 0.0f, // bottom-left
+  0.992f, 0.008f, 0.008f,   0.0f, -1.0f,  0.0f,   1.0f, 0.0f, // bottom-right
+  0.992f, 0.008f, 0.992f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f, // top-right
+  0.992f, 0.008f, 0.992f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f, // top-right
+  0.008f, 0.008f, 0.992f,   0.0f, -1.0f,  0.0f,   0.0f, 1.0f, // top-left
+  0.008f, 0.008f, 0.008f,   0.0f, -1.0f,  0.0f,   0.0f, 0.0f, // bottom-left
   // Top face
-  0.01f, 0.99f, 0.01f,   0.0f,  1.0f,  0.0f,   0.0f, 1.0f, // top-left
-  0.99f, 0.99f, 0.99f,   0.0f,  1.0f,  0.0f,   1.0f, 0.0f, // bottom-right
-  0.99f, 0.99f, 0.01f,   0.0f,  1.0f,  0.0f,   1.0f, 1.0f, // top-right     
-  0.99f, 0.99f, 0.99f,   0.0f,  1.0f,  0.0f,   1.0f, 0.0f, // bottom-right
-  0.01f, 0.99f, 0.01f,   0.0f,  1.0f,  0.0f,   0.0f, 1.0f, // top-left
-  0.01f, 0.99f, 0.99f,   0.0f,  1.0f,  0.0f,   0.0f, 0.0f  // bottom-left        
+  0.008f, 0.992f, 0.008f,   0.0f,  1.0f,  0.0f,   0.0f, 1.0f, // top-left
+  0.992f, 0.992f, 0.992f,   0.0f,  1.0f,  0.0f,   1.0f, 0.0f, // bottom-right
+  0.992f, 0.992f, 0.008f,   0.0f,  1.0f,  0.0f,   1.0f, 1.0f, // top-right     
+  0.992f, 0.992f, 0.992f,   0.0f,  1.0f,  0.0f,   1.0f, 0.0f, // bottom-right
+  0.008f, 0.992f, 0.008f,   0.0f,  1.0f,  0.0f,   0.0f, 1.0f, // top-left
+  0.008f, 0.992f, 0.992f,   0.0f,  1.0f,  0.0f,   0.0f, 0.0f  // bottom-left        
 };
 
 GLfloat cubeEdgesVertices[24] = {
@@ -109,15 +109,15 @@ GLuint cubeEdgesIndices[24] = {
 
 GLfloat fieldWallsVertices[56] = {
   // positions           // color
-  -0.5f,  0.0f, -0.5f,   0.5f, 0.5f, 0.5f, 0.3f, // back-bottom-left
-   0.5f,  1.0f, -0.5f,   0.5f, 0.5f, 0.5f, 0.3f, // back-top-right
-   0.5f,  0.0f, -0.5f,   0.5f, 0.5f, 0.5f, 0.3f, // back-bottom-right
-  -0.5f,  1.0f, -0.5f,   0.5f, 0.5f, 0.5f, 0.3f, // back-top-left
+  -0.492f,  0.0f, -0.492f,   0.6f, 0.6f, 0.6f, 0.25f, // back-bottom-left
+   0.492f,  1.0f, -0.492f,   0.6f, 0.6f, 0.6f, 0.25f, // back-top-right
+   0.492f,  0.0f, -0.492f,   0.6f, 0.6f, 0.6f, 0.25f, // back-bottom-right
+  -0.492f,  1.0f, -0.492f,   0.6f, 0.6f, 0.6f, 0.25f, // back-top-left
 
-  -0.5f,  0.0f,  0.5f,   0.5f, 0.5f, 0.5f, 0.3f, // front-bottom-left
-   0.5f,  0.0f,  0.5f,   0.5f, 0.5f, 0.5f, 0.3f, // front-bottom-right
-   0.5f,  1.0f,  0.5f,   0.5f, 0.5f, 0.5f, 0.3f, // front-top-right
-  -0.5f,  1.0f,  0.5f,   0.5f, 0.5f, 0.5f, 0.3f  // front-top-left
+  -0.492f,  0.0f,  0.492f,   0.6f, 0.6f, 0.6f, 0.25f, // front-bottom-left
+   0.492f,  0.0f,  0.492f,   0.6f, 0.6f, 0.6f, 0.25f, // front-bottom-right
+   0.492f,  1.0f,  0.492f,   0.6f, 0.6f, 0.6f, 0.25f, // front-top-right
+  -0.492f,  1.0f,  0.492f,   0.6f, 0.6f, 0.6f, 0.25f  // front-top-left
 };
 
 GLuint fieldWallsIndices[24] = {

@@ -20,6 +20,9 @@ private:
 
   bool jspresent;
 
+  // Flags for comands
+  bool rolling;
+  bool moving;
   //Update current refresh time (ms)
   bool speedUp;
   // Flag for new game
@@ -72,10 +75,6 @@ private:
   int length;
   //Angle of horizontal visualization
   float horAngle;
-  //Player name
-  char playerLabel[60];
-  //Player score
-  char scoreLabel[20];
   //Matrix of Wall Tetrix
   std::vector<std::vector<char>> fieldMatrix;
   //Piece last x
@@ -91,7 +90,9 @@ private:
   //
   double lastTimeMoveDown;
   //
-  double lastTimeKeyboard;
+  double lastTimeMoveHoriz;
+  //
+  double lastTimeRoll;
 
 
 public:

@@ -9,8 +9,10 @@
 
 #define PI 3.14159265
 
-#define DISTANCE 30
+#define DISTANCE 32
 #define VER_ANGLE 30
+#define MOVE_HOR_DELAY 0.1
+#define ROTATION_DELAY 0.2
 
 EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
 
@@ -31,7 +33,7 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
 	scrFactor = scrFact;
 	widePadding = wdPadd;
 
-  horAngle = 0;
+  horAngle = 90;
 
   textShader = new Shader("res/shaders/text_shader.vs", "res/shaders/text_shader.fs");
   imageShader = new Shader("res/shaders/image_shader.vs", "res/shaders/image_shader.fs");
@@ -54,17 +56,14 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
   float y = sin(VER_ANGLE * PI / 180.0) * DISTANCE;
   float z = cos(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
 
-  glm::vec3 camPos = glm::vec3(x, y, z);
-
-  glm::mat4 view = glm::lookAt(camPos,
+  glm::mat4 view = glm::lookAt(glm::vec3(x, y, z),
                                glm::vec3(0.0f, 9.0f, 0.0f),
                                glm::vec3(0.0, 1.0, 0.0));
 
   gameBlockShader->use();
   gameBlockShader->setMatrix4f("projection", perspProj);
   gameBlockShader->setMatrix4f("view", view);
-  gameBlockShader->setVector3f("viewPos", camPos);
-  gameBlockShader->setVector3f("lightPos", 0.0f, 30.0f, 20.0f);
+  gameBlockShader->setVector3f("lightPos", 3.0f, 30.0f, 20.0f);
   gameBlockShader->setVector3f("lightColor", glm::vec3(1.0f));
 
   gameWireShader->use();
@@ -75,11 +74,9 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
   quadShader->setMatrix4f("projection", perspProj);
   quadShader->setMatrix4f("view", view);
 
-  camPos = glm::vec3(0.0f, sin(15 * PI / 180.0f) * 8.0f, cos(15 * PI / 180.0f) * 8.0f);
-
   perspProj = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 80.0f);
 
-  view = glm::lookAt(camPos,
+  view = glm::lookAt(glm::vec3(0.0f, sin(15 * PI / 180.0f) * 8.0f, cos(15 * PI / 180.0f) * 8.0f),
                      glm::vec3(0.0f),
                      glm::vec3(0.0, 1.0, 0.0));
 
@@ -90,7 +87,6 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
   uiBlockShader->use();
   uiBlockShader->setMatrix4f("projection", perspProj);
   uiBlockShader->setMatrix4f("view", view);
-  uiBlockShader->setVector3f("viewPos", camPos);
   uiBlockShader->setVector3f("lightPos", 0.0f, 10.0f, 20.0f);
   uiBlockShader->setVector3f("lightColor", glm::vec3(1.0f));
 
@@ -104,12 +100,9 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
   gameModelRender = new ModelRender(quadShader, gameWireShader, gameBlockShader);
   uiModelRender = new ModelRender(quadShader, uiWireShader, uiBlockShader);
 
-  std::string playerStr = "Player: Player01" ;
-  playerStr.copy(playerLabel, playerStr.size());
-  strncpy(scoreLabel, "Score: 0", 8);
   height = field->getShape().size();
-  width = 4.0;
-  length = 4.0;
+  width = field->getShape()[0].size()/4 + 1;
+  length = field->getShape()[0].size()/4 + 1;
 
   fieldMatrix = std::vector<std::vector<char>>(height);
   for (int i = 0; i < height; ++i) {
@@ -119,7 +112,8 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
 
   speedUp = false;
   lastTimeMoveDown = glfwGetTime();
-  lastTimeKeyboard = glfwGetTime();
+  lastTimeMoveHoriz = glfwGetTime();
+  lastTimeRoll = glfwGetTime();
 }
 
 EndlessMode::~EndlessMode() {
@@ -205,9 +199,6 @@ void EndlessMode::updateActivePiece(Drawable *piece, glm::ivec2 pos) {
 
 void EndlessMode::processInputs(GLFWwindow *window) {
 
-  if (glfwGetTime() <= lastTimeKeyboard + 0.1) return;
-  lastTimeKeyboard = glfwGetTime();
-
   if (glfwJoystickPresent(GLFW_JOYSTICK_2)) {
     jspresent = true;
     //TODO
@@ -217,18 +208,36 @@ void EndlessMode::processInputs(GLFWwindow *window) {
     speedUp = false;
 
     bool keyPPressed = glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS;
-    bool keyQPressed = glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS;
+    bool keyEscPressed = glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
 
-    if (paused && !keyPPressed && !keyQPressed) return;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+    if (paused && !keyPPressed && !keyEscPressed) return;
+    if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) &&
+        glfwGetTime() >= lastTimeMoveHoriz + MOVE_HOR_DELAY) {
+
+      lastTimeMoveHoriz = glfwGetTime();
       activeTetr->moveLeft();
-    } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+    
+    } else if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) &&
+        glfwGetTime() >= lastTimeMoveHoriz + MOVE_HOR_DELAY) {
+      
+      lastTimeMoveHoriz = glfwGetTime();
       activeTetr->moveRight();
-    } else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-      activeTetr->rotate();
-    } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+    } 
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+      if (glfwGetTime() >= lastTimeRoll + ROTATION_DELAY) {
+        lastTimeRoll = glfwGetTime();
+        activeTetr->rotate();
+      }
+    } else {
+      lastTimeRoll -= ROTATION_DELAY; // Elimines the delay if player release the key
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
       speedUp = true;
-    } else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+    } 
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
       if(paused) {
         paused = false;
         updateField(field);
@@ -237,9 +246,9 @@ void EndlessMode::processInputs(GLFWwindow *window) {
         paused = true;
         activeTetr->pause();
       }
-    } else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-      exit(-1);
-    } else if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+    } 
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
       sceneMaster->goToMainMenu();
     }
   }
@@ -262,13 +271,11 @@ void EndlessMode::rollCamera() {
   else
     value = 0;
 
-  float x = sin(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
-  float y = sin(VER_ANGLE * PI / 180.0) * DISTANCE;
-  float z = cos(horAngle * PI / 180) * cos(VER_ANGLE * PI / 180.0) * DISTANCE;
+  float x = sin(horAngle * PI / 180.0f) * cos(VER_ANGLE * PI / 180.0f) * DISTANCE;
+  float y = sin(VER_ANGLE * PI / 180.0f) * DISTANCE;
+  float z = cos(horAngle * PI / 180.0f) * cos(VER_ANGLE * PI / 180.0f) * DISTANCE;
 
-  glm::vec3 camPos = glm::vec3(x, y, z);
-
-  glm::mat4 view = glm::lookAt(camPos,
+  glm::mat4 view = glm::lookAt(glm::vec3(x, y, z),
                                glm::vec3(0.0f, 9.0f, 0.0f),
                                glm::vec3(0.0, 1.0, 0.0));
 
@@ -280,12 +287,11 @@ void EndlessMode::rollCamera() {
 
   gameBlockShader->use();
   gameBlockShader->setMatrix4f("view", view);
-  gameBlockShader->setVector3f("viewPos", camPos);
 }
 
 void EndlessMode::update() {
-  float velocity = 0.5 - 0.05*(level-1);
-  float refreshTime = speedUp ? velocity/10 : velocity;
+  float velocity = 0.5f - 0.05f * (level-1);
+  float refreshTime = speedUp ? 0.05f : velocity;
   if (glfwGetTime() > lastTimeMoveDown + refreshTime) {
     lastTimeMoveDown = glfwGetTime();
     if(playing && !paused) {
