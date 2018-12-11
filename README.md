@@ -26,15 +26,14 @@ Passo a passo de instalação:
 4. Cheque se a checkbox "Generate a loader" está marcada
 5. Aperte em "GENERATE"
 6. Baixe o **glad.zip** gerado
-7. Extraia e transfira a **glad/include/glad** para a para a pasta padrão do ubuntu:
-
-  ```sudo mv glad/include/glad /usr/include/ -i```
+7. Extraia e transfira a **glad/include/glad** para a para a pasta padrão do ubuntu:</br>```sudo mv glad/include/glad /usr/include/ -i```
 
 ## PARA COMPILAR E EXECURAR:
-Na pasta raiz do projeto execute:
-```make```
-Para jogar:
-```./game```
+Na pasta raiz do projeto execute:</br>
+  ```make```
+
+Para jogar:</br>
+  ```./game```
 
 ## Autores
 
