@@ -35,6 +35,11 @@ Na pasta raiz do projeto execute:</br>
 Para jogar:</br>
   ```./game```
 
+## PARA COMPILAR E EXECURAR:
+Na pasta raiz do projeto execute:</br>
+  ```make```
+
+
 ## Autores
 
 * **Hugo Oliveira** - *idealizer/developer* - [HugoTHO](https://github.com/HugoTHO)
