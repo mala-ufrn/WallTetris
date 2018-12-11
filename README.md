@@ -4,19 +4,19 @@ Walltetris é um jogo desenvolvido para a disciplina de Computação Gráfica I 
 
 Mantendo as demais mecânicas do jogo TETRIS® original, foram removidos os limites horizontais, unindo os lados do campo, e auterada a sua forma de visualização, fazendo-o assemelhar-se com uma construção de 4 paredes, por isso o nome “Wall”tetris.
 
-![Imagem da tela de jogo](https://github.com/mala-ufrn/WallTetris/.readme_imgs/screenshot01.png)
+![Imagem da tela de jogo](https://raw.githubusercontent.com/mala-ufrn/WallTetris/master/.readme_imgs/screenshot01.png)
 
-### DEPENDÊNCIAS:
-####GLFW
+## DEPENDÊNCIAS:
+###GLFW
 ```sudo apt-get install libglfw3-dev```
 
-####Freetype2
+###Freetype2
 ```sudo apt-get install libfreetype6-dev```
 
-####GLM
+###GLM
 ```sudo apt-get install libglm-dev```
 
-####GLAD
+###GLAD
 Passo a passo de instalação:
 1. Vá em https://glad.dav1d.de/
 2. Em *API* mude gl para "version 3.3" ou mais novo
@@ -27,12 +27,11 @@ Passo a passo de instalação:
 7. Extraia e transfira a **glad/include/glad** para a para a pasta padrão do ubuntu:
 ``` sudo mv glad/include/glad /usr/include/ -i```
 
-### PARA COMPILAR E EXECURAR:
+## PARA COMPILAR E EXECURAR:
 Na pasta raiz do projeto execute:
 ```make```
 Para jogar:
 ```./game```
-
 
 ## Autores
 
