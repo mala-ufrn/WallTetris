@@ -7,7 +7,7 @@ LDFLAGS = `pkg-config --static --libs freetype2 glfw3 gl`
 FREETYPE_CFLAGS = `pkg-config --cflags freetype2`
 INCLUDE_PATH = -I./include
 
-OBJECTS = bin/credits.o bin/endless_mode.o bin/field.o bin/glad.o \
+OBJECTS = bin/credits.o bin/endless_mode.o bin/field.o bin/glad/glad.o \
           bin/image_render.o bin/main.o bin/main_menu.o bin/model_render.o \
           bin/tetromino.o bin/text_render.o \
 
@@ -19,8 +19,8 @@ bin/endless_mode.o: scene.h game_master.h endless_mode.h endless_mode.cpp
 	g++ -c src/scenes/endless_mode.cpp -o bin/endless_mode.o $(INCLUDE_PATH)
 bin/field.o: field.h field.cpp
 	g++ -c src/models/field.cpp -o bin/field.o $(INCLUDE_PATH)
-bin/glad.o: glad.c
-	gcc -c src/utils/glad.c -o bin/glad.o
+bin/glad/glad.o: glad.c
+	gcc -c src/utils/glad.c -o bin/glad/glad.o $(INCLUDE_PATH)
 bin/image_render.o: shader.h image_render.h image_render.cpp
 	g++ -c src/rendering/image_render.cpp -o bin/image_render.o $(INCLUDE_PATH)
 bin/main.o: $(UTILS) game.h scene_master.h main.cpp
