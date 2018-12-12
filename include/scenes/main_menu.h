@@ -2,6 +2,7 @@
 #define MAIN_MENU_H
 
 #include <glm/glm.hpp>
+#include <irrklang/irrKlang.h>
 
 #include "scene.h"
 #include "scene_master.h"
@@ -32,9 +33,11 @@ private:
              *soapStore200;
   ImageRender *trumpImage,
               *backGround;
+  irrklang::ISoundEngine *soundEngine;
+  irrklang::ISound *music;
 
 public:
-  MainMenu(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);
+  MainMenu(SceneMaster* sceneMaster, irrklang::ISoundEngine* soundEngine, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);
   ~MainMenu();
   void processInputs(GLFWwindow *window);
   void update();

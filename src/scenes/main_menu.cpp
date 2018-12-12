@@ -7,7 +7,7 @@
 #define WIDTH 800.0f
 #define HEIGHT 600.0f
 
-MainMenu::MainMenu(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
+MainMenu::MainMenu(SceneMaster* sceneMaster, irrklang::ISoundEngine* soundEngine, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
 
   this->sceneMaster = sceneMaster;
 
@@ -17,6 +17,9 @@ MainMenu::MainMenu(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, flo
   selected = 0;
   pressed = false;
   jspresent = false;
+  this->soundEngine = soundEngine;
+  music = soundEngine->play2D("res/music/korobeiniki_remix_v0.ogg", true, false, true);
+  music->setVolume(0.1f);
 
 	textShader = new Shader("res/shaders/text_shader.vs", "res/shaders/text_shader.fs");
   imageShader = new Shader("res/shaders/image_shader.vs", "res/shaders/image_shader.fs");
@@ -68,6 +71,7 @@ void MainMenu::processInputs(GLFWwindow *window) {
     if (buttons[0] == GLFW_PRESS) {
        if (selected == 0){
         sceneMaster->goToEndless();
+        music->stop();
       } else {
         sceneMaster->goToCredits();
       }
@@ -81,6 +85,7 @@ void MainMenu::processInputs(GLFWwindow *window) {
         glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
       if (!pressed){
         selected = (selected + 1) % 2;
+        soundEngine->play2D("res/sounds/bleep.ogg", false);
       }
       pressed = true;
     }  else if (pressed){
@@ -90,9 +95,15 @@ void MainMenu::processInputs(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
       if (selected == 0){
         sceneMaster->goToEndless();
+        unsigned int musicPos = music->getPlayPosition();
+        music->stop();
+        music = soundEngine->play2D("res/music/korobeiniki_remix_v1.ogg", true, false, true);
+        music->setPlayPosition(musicPos);
+        music->setVolume(0.09f);
       } else {
         sceneMaster->goToCredits();
       }
+      soundEngine->play2D("res/sounds/powerup.wav", false);
     }
   }
 }

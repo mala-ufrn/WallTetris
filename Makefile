@@ -9,10 +9,12 @@ INCLUDE_PATH = -I./include
 
 OBJECTS = bin/credits.o bin/endless_mode.o bin/field.o bin/glad/glad.o \
           bin/image_render.o bin/main.o bin/main_menu.o bin/model_render.o \
-          bin/tetromino.o bin/text_render.o \
+          bin/tetromino.o bin/text_render.o
+
+IRRKLANG = bin/irrklang/libIrrKlang.so
 
 game: $(OBJECTS)
-	g++ $(OBJECTS) -o game $(LDFLAGS)
+	g++ $(OBJECTS) $(IRRKLANG) -o game $(LDFLAGS)
 bin/credits.o: scene.h credits.h credits.cpp
 	g++ -c src/scenes/credits.cpp -o bin/credits.o $(INCLUDE_PATH)
 bin/endless_mode.o: scene.h game_master.h endless_mode.h endless_mode.cpp
