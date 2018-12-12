@@ -2,6 +2,7 @@
 #define FIELD_H_
 
 #include <vector>
+#include <irrklang/irrKlang.h>
 
 #include "game_master.h"
 
@@ -9,10 +10,11 @@ class Field : public Drawable {
 private:
   std::vector<std::vector<char>> shape;
   GameMaster* master;
+  irrklang::ISoundEngine *soundEngine;
 
 public:
   // Well object constructor;
-  Field(GameMaster *master);
+  Field(GameMaster *master, irrklang::ISoundEngine* soundEngine);
   // Well object destructor;
   ~Field();
   // Returns the field shape by reference
@@ -21,7 +23,7 @@ public:
   void attachTetromino(std::vector<std::vector<char>> tetrShape, int x, int y);
 private:
   // Check if there are complete lines
-  void checkLines();
+  bool checkLines();
   // Clear the referenced line and down the uppers
   void clearLine(int level);
 };

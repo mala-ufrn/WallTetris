@@ -2,6 +2,7 @@
 #define ENDLESS_MODE_H
 
 #include <glm/glm.hpp>
+#include <irrklang/irrKlang.h>
 #include <vector>
 
 #include "scene.h"
@@ -66,6 +67,7 @@ private:
   ModelRender *gameModelRender,
               *uiModelRender;
 
+  irrklang::ISoundEngine *soundEngine;
 
   //Height of Wall Tetris
   int height;
@@ -93,10 +95,14 @@ private:
   double lastTimeMoveHoriz;
   //
   double lastTimeRoll;
+  //
+  bool pausePressed;
+  //
+  double pausedTimeMark;
 
 
 public:
-  EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);
+  EndlessMode(SceneMaster* sceneMaster, irrklang::ISoundEngine* soundEngine, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd);
   ~EndlessMode();
   void createNextTetr(int posX);
   void increaseScore(int value);

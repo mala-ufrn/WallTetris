@@ -14,7 +14,7 @@
 #define MOVE_HOR_DELAY 0.1
 #define ROTATION_DELAY 0.2
 
-EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
+EndlessMode::EndlessMode(SceneMaster* sceneMaster, irrklang::ISoundEngine* soundEngine, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
 
   this->sceneMaster = sceneMaster;
 
@@ -25,7 +25,7 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
   level = 1;
   lines = 0;
 
-  field = new Field(this);
+  field = new Field(this, soundEngine);
   nextTetr = new Tetromino(field, this);
   activeTetr = NULL;
 
@@ -114,6 +114,7 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, const glm::vec2 win_dimention
   lastTimeMoveDown = glfwGetTime();
   lastTimeMoveHoriz = glfwGetTime();
   lastTimeRoll = glfwGetTime();
+  pausePressed = false;
 }
 
 EndlessMode::~EndlessMode() {
@@ -207,48 +208,53 @@ void EndlessMode::processInputs(GLFWwindow *window) {
     jspresent = false;
     speedUp = false;
 
-    bool keyPPressed = glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS;
-    bool keyEscPressed = glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
+    if (!paused) {
+      if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) &&
+          glfwGetTime() >= lastTimeMoveHoriz + MOVE_HOR_DELAY) {
 
-    if (paused && !keyPPressed && !keyEscPressed) return;
-    if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) &&
-        glfwGetTime() >= lastTimeMoveHoriz + MOVE_HOR_DELAY) {
-
-      lastTimeMoveHoriz = glfwGetTime();
-      activeTetr->moveLeft();
-    
-    } else if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) &&
-        glfwGetTime() >= lastTimeMoveHoriz + MOVE_HOR_DELAY) {
+        lastTimeMoveHoriz = glfwGetTime();
+        activeTetr->moveLeft();
       
-      lastTimeMoveHoriz = glfwGetTime();
-      activeTetr->moveRight();
-    } 
+      } else if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) &&
+          glfwGetTime() >= lastTimeMoveHoriz + MOVE_HOR_DELAY) {
+        
+        lastTimeMoveHoriz = glfwGetTime();
+        activeTetr->moveRight();
+      } 
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-      if (glfwGetTime() >= lastTimeRoll + ROTATION_DELAY) {
-        lastTimeRoll = glfwGetTime();
-        activeTetr->rotate();
+      if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        if (glfwGetTime() >= lastTimeRoll + ROTATION_DELAY) {
+          lastTimeRoll = glfwGetTime();
+          activeTetr->rotate();
+        }
+      } else {
+        lastTimeRoll -= ROTATION_DELAY; // Elimines the delay if player release the key
       }
-    } else {
-      lastTimeRoll -= ROTATION_DELAY; // Elimines the delay if player release the key
+
+      if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        speedUp = true;
+      } 
     }
 
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-      speedUp = true;
-    } 
-
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-      if(paused) {
-        paused = false;
-        updateField(field);
-        activeTetr->resume();
-      } else {
-        paused = true;
-        activeTetr->pause();
+      if(!pausePressed){
+        if(paused) {
+          glfwSetTime(pausedTimeMark);
+          paused = false;
+          updateField(field);
+          activeTetr->resume();
+        } else {
+          pausedTimeMark = glfwGetTime();
+          paused = true;
+          activeTetr->pause();
+        }
       }
-    } 
+      pausePressed = true;
+    } else if (pausePressed){
+      pausePressed = false;
+    }
 
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+    if (paused && glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
       sceneMaster->goToMainMenu();
     }
   }
@@ -292,9 +298,9 @@ void EndlessMode::rollCamera() {
 void EndlessMode::update() {
   float velocity = 0.5f - 0.05f * (level-1);
   float refreshTime = speedUp ? 0.05f : velocity;
-  if (glfwGetTime() > lastTimeMoveDown + refreshTime) {
-    lastTimeMoveDown = glfwGetTime();
-    if(playing && !paused) {
+  if(playing && !paused) {
+    if (glfwGetTime() > lastTimeMoveDown + refreshTime) {
+      lastTimeMoveDown = glfwGetTime();
       activeTetr->moveDown();
     }
   }
