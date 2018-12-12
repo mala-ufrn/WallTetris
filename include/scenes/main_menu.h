@@ -19,6 +19,8 @@ private:
   bool pressed;
   bool jspresent;
 
+  bool aceptPressed;
+
   float arrowAnim;
   float *scrFactor,
         *widePadding;
@@ -43,5 +45,7 @@ public:
   void update();
   void draw();
   void rollCamera();
+  void isAceptPressed(bool pressed) { aceptPressed = pressed; }
+  void setMusic(irrklang::ISound* music) { this->music = music; }
 };
 #endif

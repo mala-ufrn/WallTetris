@@ -17,6 +17,7 @@ MainMenu::MainMenu(SceneMaster* sceneMaster, irrklang::ISoundEngine* soundEngine
   selected = 0;
   pressed = false;
   jspresent = false;
+  aceptPressed = false;
   this->soundEngine = soundEngine;
   music = soundEngine->play2D("res/music/korobeiniki_remix_v0.ogg", true, false, true);
   music->setVolume(0.1f);
@@ -50,61 +51,58 @@ MainMenu::~MainMenu() {
 }
 
 void MainMenu::processInputs(GLFWwindow *window) {
+  bool mDownCmd;
+  bool mUpCmd;
+  bool aceptCmd;
+
 	if (glfwJoystickPresent(GLFW_JOYSTICK_2)) {
-		
     jspresent = true;
 
+    // Capture axis and buttons
     int numAxis;
 		const float *axis = glfwGetJoystickAxes(GLFW_JOYSTICK_2, &numAxis);
-		if (axis[7] != 0 || axis[1] < -0.3f || axis[1] > 0.3f) {
-	    if (!pressed){
-	      selected = (selected + 1) % 2;
-	    }
-	    pressed = true;
-  	}  else if (pressed){
-    	pressed = false;
-  	}
-
-    int count;
-    const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_2, &count);
-
-    if (buttons[0] == GLFW_PRESS) {
-       if (selected == 0){
-        sceneMaster->goToEndless();
-        music->stop();
-      } else {
-        sceneMaster->goToCredits();
-      }
-    }
-	}
+    int numButtons;
+    const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_2, &numButtons);
+		
+    mDownCmd = axis[7] == 1 || axis[1] > 0.3f;
+    mUpCmd = axis[7] == -1 || axis[1] < -0.3f;
+    aceptCmd = buttons[0] == GLFW_PRESS;
 	
-  else {
+  } else {
     jspresent = false;
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS  ||
-        glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-      if (!pressed){
-        selected = (selected + 1) % 2;
-        soundEngine->play2D("res/sounds/bleep.ogg", false);
-      }
-      pressed = true;
-    }  else if (pressed){
-      pressed = false;
-    }
+    mDownCmd = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS;
+    mUpCmd = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS;
+    aceptCmd = glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS;
+  }
 
-    if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS){
+  if (mDownCmd || mUpCmd) {
+    if (!pressed){
+      selected = (selected + 1) % 2;
+      soundEngine->play2D("res/sounds/bleep.ogg", false);
+    }
+    pressed = true;
+  } else {
+    pressed = false;
+  }
+
+  if (aceptCmd){
+    if (!aceptPressed) {
       if (selected == 0){
-        sceneMaster->goToEndless();
         unsigned int musicPos = music->getPlayPosition();
         music->stop();
+        music->drop();
         music = soundEngine->play2D("res/music/korobeiniki_remix_v1.ogg", true, false, true);
         music->setPlayPosition(musicPos);
         music->setVolume(0.09f);
+        sceneMaster->goToEndless(music);
       } else {
         sceneMaster->goToCredits();
       }
       soundEngine->play2D("res/sounds/powerup.wav", false);
     }
+  } else {
+    aceptPressed = false;
   }
 }
 

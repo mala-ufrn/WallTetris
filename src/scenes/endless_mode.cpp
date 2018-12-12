@@ -17,24 +17,23 @@
 EndlessMode::EndlessMode(SceneMaster* sceneMaster, irrklang::ISoundEngine* soundEngine, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
 
   this->sceneMaster = sceneMaster;
+  this->soundEngine = soundEngine;
 
-  playing = true;
-  paused = false;
   highScore = 0;
-  score = 0;
-  level = 1;
-  lines = 0;
 
-  field = new Field(this, soundEngine);
-  nextTetr = new Tetromino(field, this);
+  winOrigDims = win_dimentions;
+  scrFactor = scrFact;
+  widePadding = wdPadd;
+
+  height = 19;
+  width = 4;
+  length = 4;
+
+  field = NULL;
   activeTetr = NULL;
+  nextTetr = NULL;
 
-	winOrigDims = win_dimentions;
-	scrFactor = scrFact;
-	widePadding = wdPadd;
-
-  horAngle = 90;
-
+  // OpenGL ...
   textShader = new Shader("res/shaders/text_shader.vs", "res/shaders/text_shader.fs");
   imageShader = new Shader("res/shaders/image_shader.vs", "res/shaders/image_shader.fs");
   quadShader = new Shader("res/shaders/quad_shader.vs", "res/shaders/quad_shader.fs");
@@ -99,22 +98,6 @@ EndlessMode::EndlessMode(SceneMaster* sceneMaster, irrklang::ISoundEngine* sound
 
   gameModelRender = new ModelRender(quadShader, gameWireShader, gameBlockShader);
   uiModelRender = new ModelRender(quadShader, uiWireShader, uiBlockShader);
-
-  height = field->getShape().size();
-  width = field->getShape()[0].size()/4 + 1;
-  length = field->getShape()[0].size()/4 + 1;
-
-  fieldMatrix = std::vector<std::vector<char>>(height);
-  for (int i = 0; i < height; ++i) {
-    fieldMatrix[i] = std::vector<char>(width*2 +length*2 - 4/*corners*/, 0);
-  }
-  value = 0;
-
-  speedUp = false;
-  lastTimeMoveDown = glfwGetTime();
-  lastTimeMoveHoriz = glfwGetTime();
-  lastTimeRoll = glfwGetTime();
-  pausePressed = false;
 }
 
 EndlessMode::~EndlessMode() {
@@ -163,14 +146,6 @@ void EndlessMode::increaseLines(int quantity){
   }
 }
 
-void EndlessMode::gameOver() {
-  playing = false;
-}
-
-void EndlessMode::updateField(Drawable *field) {
-  fieldMatrix = field->getShape();
-}
-
 void EndlessMode::updateActivePiece(Drawable *piece, glm::ivec2 pos) {
   std::vector<std::vector<char>> shape = piece->getShape();
   int x = pos.x, y = pos.y;
@@ -200,29 +175,56 @@ void EndlessMode::updateActivePiece(Drawable *piece, glm::ivec2 pos) {
 
 void EndlessMode::processInputs(GLFWwindow *window) {
 
+  bool mRightCmd;
+  bool mLeftCmd;
+  bool mDownCmd;
+  bool rollCmd;
+  bool pauseCmd;
+  bool exitCmd;
+  bool aceptCmd;
+
   if (glfwJoystickPresent(GLFW_JOYSTICK_2)) {
     jspresent = true;
-    //TODO
+    
+    // Capture axis and buttons
+    int numAxis;
+    const float *axis = glfwGetJoystickAxes(GLFW_JOYSTICK_2, &numAxis);
+    int numButtons;
+    const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_2, &numButtons);
+
+    mRightCmd = axis[6] == 1 || axis[0] > 0.3f;
+    mLeftCmd = axis[6] == -1 || axis[0] < -0.3f;
+    mDownCmd = axis[7] == 1 || axis[1] > 0.3f;
+    rollCmd = buttons[1] == GLFW_PRESS;
+    pauseCmd = buttons[9] == GLFW_PRESS;
+    aceptCmd = buttons[0] == GLFW_PRESS;
+    exitCmd = buttons[11] == GLFW_PRESS && buttons[12] == GLFW_PRESS;
 
   } else {
     jspresent = false;
-    speedUp = false;
 
-    if (!paused) {
-      if ((glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) &&
-          glfwGetTime() >= lastTimeMoveHoriz + MOVE_HOR_DELAY) {
+    mRightCmd = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS;
+    mLeftCmd = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS;
+    mDownCmd = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS;
+    rollCmd = glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS;
+    pauseCmd = glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS;
+    aceptCmd = glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS;
+    exitCmd = glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
+  }
 
+  speedUp = false;
+
+    if (playing && !paused) {
+      if (mLeftCmd && glfwGetTime() >= lastTimeMoveHoriz + MOVE_HOR_DELAY) {
         lastTimeMoveHoriz = glfwGetTime();
         activeTetr->moveLeft();
       
-      } else if ((glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) &&
-          glfwGetTime() >= lastTimeMoveHoriz + MOVE_HOR_DELAY) {
-        
+      } else if ( mRightCmd && glfwGetTime() >= lastTimeMoveHoriz + MOVE_HOR_DELAY) {  
         lastTimeMoveHoriz = glfwGetTime();
         activeTetr->moveRight();
       } 
 
-      if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+      if (rollCmd) {
         if (glfwGetTime() >= lastTimeRoll + ROTATION_DELAY) {
           lastTimeRoll = glfwGetTime();
           activeTetr->rotate();
@@ -231,19 +233,23 @@ void EndlessMode::processInputs(GLFWwindow *window) {
         lastTimeRoll -= ROTATION_DELAY; // Elimines the delay if player release the key
       }
 
-      if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+      if (mDownCmd) {
         speedUp = true;
       } 
     }
 
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+    if (playing && pauseCmd) {
       if(!pausePressed){
         if(paused) {
+          soundEngine->play2D("res/sounds/powerup.wav", false);
+          music->setVolume(0.09f);
           glfwSetTime(pausedTimeMark);
           paused = false;
           updateField(field);
           activeTetr->resume();
         } else {
+          soundEngine->play2D("res/sounds/powerup.wav", false);
+          music->setVolume(0.04f);
           pausedTimeMark = glfwGetTime();
           paused = true;
           activeTetr->pause();
@@ -254,10 +260,23 @@ void EndlessMode::processInputs(GLFWwindow *window) {
       pausePressed = false;
     }
 
-    if (paused && glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-      sceneMaster->goToMainMenu();
+    if (paused && exitCmd){
+      soundEngine->play2D("res/sounds/powerup.wav", false);
+      music->stop();
+      music->drop();
+      music = soundEngine->play2D("res/music/korobeiniki_remix_v0.ogg", true, false, true);
+      music->setVolume(0.1f);
+      sceneMaster->goToMainMenu(music);
     }
-  }
+
+    if (!playing && aceptCmd){
+      soundEngine->play2D("res/sounds/powerup.wav", false);
+      music->stop();
+      music->drop();
+      music = soundEngine->play2D("res/music/korobeiniki_remix_v0.ogg", true, false, true);
+      music->setVolume(0.1f);
+      sceneMaster->goToMainMenu(music, aceptCmd);
+    }
 }
 
 void EndlessMode::rollCamera() {
@@ -349,4 +368,41 @@ void EndlessMode::draw() {
     sansKey64->renderLeft("\\S or \\s: speed up", 430.0f, 120.0f, 0.35f, glm::vec3(0.6f));
     sansKey64->renderLeft("\\P or \\e: pause", 430.0f, 90.0f, 0.35f, glm::vec3(0.6f));
   }
+}
+
+void EndlessMode::startGame() {
+  playing = true;
+  paused = false;
+  score = 0;
+  level = 1;
+  lines = 0;
+
+  if (field != NULL)
+    delete field;
+  field = new Field(this, soundEngine);
+  
+  if (nextTetr != NULL) {
+    delete nextTetr;
+  }
+
+  nextTetr = new Tetromino(field, this);
+  
+  if (activeTetr != NULL)
+    delete activeTetr;
+
+  horAngle = 90;
+
+  fieldMatrix = std::vector<std::vector<char>>(height);
+  for (int i = 0; i < height; ++i) {
+    fieldMatrix[i] = std::vector<char>(width*2 +length*2 - 4/*corners*/, 0);
+  }
+  value = 0;
+
+  speedUp = false;
+  lastTimeMoveDown = glfwGetTime();
+  lastTimeMoveHoriz = glfwGetTime();
+  lastTimeRoll = glfwGetTime();
+  pausePressed = false;
+
+  createNextTetr(0);
 }
