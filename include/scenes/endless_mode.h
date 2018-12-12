@@ -69,6 +69,8 @@ private:
 
   irrklang::ISoundEngine *soundEngine;
 
+  irrklang::ISound *music;
+
   //Height of Wall Tetris
   int height;
   //Width of Wall Tetris
@@ -107,12 +109,14 @@ public:
   void createNextTetr(int posX);
   void increaseScore(int value);
   void increaseLines(int quantity);
-  void gameOver();
-  void updateField(Drawable *field);
+  void gameOver() { playing = false; }
+  void setMusic(irrklang::ISound* music) { this->music = music; }
+  void updateField(Drawable *field) { fieldMatrix = field->getShape(); }
   void updateActivePiece(Drawable *piece, glm::ivec2 pos);
   void processInputs(GLFWwindow *window);
   void rollCamera();
   void update();
   void draw();
+  void startGame();
 };
 #endif

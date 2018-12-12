@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include <glm/glm.hpp>
-#include <irrklang/irrKlang.h>
 
 #include "scenes/main_menu.h"
 #include "scenes/endless_mode.h"
@@ -43,12 +42,16 @@ public:
     delete credits;
   }
 
-  void goToMainMenu(){
+  void goToMainMenu(irrklang::ISound *music = NULL, bool AceptCmd = false){
+    if (music != NULL)
+      mainMenu->setMusic(music);
+    mainMenu->isAceptPressed(AceptCmd);
     currentScene = mainMenu;
   }
 
-  void goToEndless(){
-    endlessMode->createNextTetr(0);
+  void goToEndless(irrklang::ISound *music){
+    endlessMode->setMusic(music);
+    endlessMode->startGame();
     currentScene = endlessMode;
   }
 
