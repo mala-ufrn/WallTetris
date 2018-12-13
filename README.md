@@ -39,7 +39,6 @@ Para jogar:</br>
 Na pasta raiz do projeto execute:</br>
   ```make```
 
-
 ## Autores
 
 * **Hugo Oliveira** - *idealizer/developer* - [HugoTHO](https://github.com/HugoTHO)
