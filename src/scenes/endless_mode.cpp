@@ -327,6 +327,7 @@ void EndlessMode::update() {
     if(exploding && glfwGetTime() > explodingTimeMark + EXPLOSION_DELAY) {
       field->clearExploded();
       exploding = false;
+      updateActivePiece(activeTetr, glm::ivec2(lastX, lastY));
     }
   }
 }
@@ -368,12 +369,12 @@ void EndlessMode::draw() {
     sansPsx64->renderLeft("\\G: speed up", 430.0f, 150.0f, 0.35f, glm::vec3(0.6f));
     sansPsx64->renderLeft("\\A: pause", 430.0f, 120.0f, 0.35f, glm::vec3(0.6f));
     if (paused){
-      sansKey64->renderLeft("Pause", 180.0f, 300.0f, 0.7f, glm::vec3(0.8f));
-      sansKey64->renderLeft("Press \\C to give up", 148.0f, 275.0f, 0.35f, glm::vec3(0.8f));
+      sansPsx64->renderLeft("Pause", 180.0f, 300.0f, 0.7f, glm::vec3(0.8f));
+      sansPsx64->renderLeft("Press \\o + \\O to give up", 129.0f, 275.0f, 0.35f, glm::vec3(0.8f));
     }
     if (!playing){
       sansKey64->renderLeft("Game Over", 130.0f, 300.0f, 0.7f, glm::vec3(0.8f));
-      sansKey64->renderLeft("Press \\X to Menu", 50.0f, 300.0f, 0.35f, glm::vec3(0.8f));
+      sansPsx64->renderLeft("Press \\X to Menu", 160.0f, 275.0f, 0.35f, glm::vec3(0.8f));
     }
   } else {
     sansKey64->renderLeft("\\A or \\a: move left", 430.0f, 210.0f, 0.35f, glm::vec3(0.6f));
