@@ -5,6 +5,9 @@
 #include <irrklang/irrKlang.h>
 #include <vector>
 
+#include <ios>
+#include <fstream>
+
 #include "scene.h"
 #include "scene_master.h"
 #include "utils/shader.h"
@@ -113,7 +116,13 @@ public:
   void createNextTetr(int posX);
   void increaseScore(int value);
   void increaseLines(int quantity);
-  void gameOver() { playing = false; }
+  void gameOver() {
+    playing = false;
+    if (score >= highScore) {
+      std::ofstream log("src/score.txt", std::ios_base::out);
+      log << score << std::endl;
+    }
+  }
   void setMusic(irrklang::ISound* music) { this->music = music; }
   void updateField(Drawable *field) { fieldMatrix = field->getShape(); }
   void updateActivePiece(Drawable *piece, glm::ivec2 pos);
