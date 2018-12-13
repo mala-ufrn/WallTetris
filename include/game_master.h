@@ -12,6 +12,7 @@ public:
   virtual void gameOver() = 0;
   virtual void updateField(Drawable *field) = 0;
   virtual void updateActivePiece(Drawable *piece, glm::ivec2 pos) = 0;
+  virtual void startExplosion() = 0;
 };
 
 #endif

@@ -13,6 +13,7 @@
 #define VER_ANGLE 30
 #define MOVE_HOR_DELAY 0.1
 #define ROTATION_DELAY 0.2
+#define EXPLOSION_DELAY 0.05
 
 EndlessMode::EndlessMode(SceneMaster* sceneMaster, irrklang::ISoundEngine* soundEngine, const glm::vec2 win_dimentions, float* scrFact, float* wdPadd){
 
@@ -323,6 +324,10 @@ void EndlessMode::update() {
       lastTimeMoveDown = glfwGetTime();
       activeTetr->moveDown();
     }
+    if(exploding && glfwGetTime() > explodingTimeMark + EXPLOSION_DELAY) {
+      field->clearExploded();
+      exploding = false;
+    }
   }
 }
 
@@ -391,6 +396,7 @@ void EndlessMode::draw() {
 void EndlessMode::startGame() {
   playing = true;
   paused = false;
+  exploding = false;
   score = 0;
   level = 1;
   lines = 0;
@@ -423,4 +429,9 @@ void EndlessMode::startGame() {
   pausePressed = false;
 
   createNextTetr(0);
+}
+
+void EndlessMode::startExplosion() {
+  exploding = true;
+  explodingTimeMark = glfwGetTime();
 }

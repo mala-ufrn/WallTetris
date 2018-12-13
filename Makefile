@@ -25,7 +25,7 @@ bin/glad/glad.o: glad.c
 	gcc -c src/utils/glad.c -o bin/glad/glad.o $(INCLUDE_PATH)
 bin/image_render.o: shader.h image_render.h image_render.cpp
 	g++ -c src/rendering/image_render.cpp -o bin/image_render.o $(INCLUDE_PATH)
-bin/main.o: $(UTILS) game.h scene_master.h main.cpp
+bin/main.o: game.h scene_master.h main.cpp
 	g++ -c src/main.cpp -o bin/main.o $(INCLUDE_PATH)
 bin/main_menu.o: scene.h main_menu.h main_menu.cpp
 	g++ -c src/scenes/main_menu.cpp -o bin/main_menu.o $(INCLUDE_PATH)
