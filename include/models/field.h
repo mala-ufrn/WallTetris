@@ -9,6 +9,7 @@
 class Field : public Drawable {
 private:
   std::vector<std::vector<char>> shape;
+  std::vector<int> explodedLines;
   GameMaster* master;
   irrklang::ISoundEngine *soundEngine;
 
@@ -21,11 +22,13 @@ public:
   std::vector<std::vector<char>> getShape();
   // Attach the piece of shape at given position (x, y)
   void attachTetromino(std::vector<std::vector<char>> tetrShape, int x, int y);
+  //
+  void clearExploded();
 private:
   // Check if there are complete lines
   bool checkLines();
-  // Clear the referenced line and down the uppers
-  void clearLine(int level);
+  //
+  void explodeLine(int level);
 };
 
 #endif //FIELD_H_

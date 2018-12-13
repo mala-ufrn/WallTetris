@@ -30,6 +30,8 @@ private:
   bool playing;
   // Flag for pause
   bool paused;
+  //
+  bool exploding;
   // High Score
   int highScore;
   // Player score
@@ -101,6 +103,8 @@ private:
   bool pausePressed;
   //
   double pausedTimeMark;
+  //
+  double explodingTimeMark;
 
 
 public:
@@ -113,6 +117,7 @@ public:
   void setMusic(irrklang::ISound* music) { this->music = music; }
   void updateField(Drawable *field) { fieldMatrix = field->getShape(); }
   void updateActivePiece(Drawable *piece, glm::ivec2 pos);
+  void startExplosion();
   void processInputs(GLFWwindow *window);
   void rollCamera();
   void update();

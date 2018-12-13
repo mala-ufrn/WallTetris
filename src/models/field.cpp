@@ -25,6 +25,7 @@ void Field::attachTetromino(std::vector<std::vector<char>> tetrShape, int x, int
   master->updateField(this);
   if(checkLines()){
     soundEngine->play2D("res/sounds/bigdrum.wav", false);
+    master->startExplosion();
   } else {
     soundEngine->play2D("res/sounds/solid.wav", false);
   }
@@ -46,19 +47,30 @@ bool Field::checkLines() {
       master->increaseScore(100);
       master->increaseLines(1);
       //Down the lines above
-      clearLine(i);
-      i = i + 1;
+      explodeLine(i);
+      explodedLines.insert(explodedLines.begin(), i);
     }
     lineComplete = true;
-   }
-   return explode;
+  }
+  if (explode)
+    master->updateField(this);
+  return explode;
 }
 
-void Field::clearLine(int level) {
-  for(int i = level; i > 1; i--) {
-    for(int j = 0; j < FIELD_NUM_COLS; j++) {
-      shape[i][j] = shape[i - 1][j];
+void Field::explodeLine(int level) {
+  for(int j = 0; j < FIELD_NUM_COLS; j++) {
+    shape[level][j] = 'w';
+  }
+}
+
+void Field::clearExploded() {
+  while(!explodedLines.empty()) {
+    for(int i = explodedLines.front(); i > 1; i--) {
+      for(int j = 0; j < FIELD_NUM_COLS; j++) {
+        shape[i][j] = shape[i - 1][j];
+      }
     }
+    explodedLines.erase(explodedLines.begin());
   }
   master->updateField(this);
 }
