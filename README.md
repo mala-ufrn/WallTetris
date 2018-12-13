@@ -7,16 +7,16 @@ Mantendo as demais mecânicas do jogo TETRIS® original, foram removidos os limi
 ![Imagem da tela de jogo](https://github.com/mala-ufrn/WallTetris/.readme_imgs/screenshot01.png)
 
 ### DEPENDÊNCIAS:
-####GLFW
+#### GLFW
 ```sudo apt-get install libglfw3-dev```
 
-####Freetype2
+#### Freetype2
 ```sudo apt-get install libfreetype6-dev```
 
-####GLM
+#### GLM
 ```sudo apt-get install libglm-dev```
 
-####GLAD
+#### GLAD
 Passo a passo de instalação:
 1. Vá em https://glad.dav1d.de/
 2. Em *API* mude gl para "version 3.3" ou mais novo
@@ -24,18 +24,11 @@ Passo a passo de instalação:
 4. Cheque se a checkbox "Generate a loader" está marcada
 5. Aperte em "GENERATE"
 6. Baixe o **glad.zip** gerado
-<<<<<<< Updated upstream
-7. Extraia e transfira a **glad/include/glad** para a para a pasta padrão do ubuntu:</br>```sudo mv glad/include/glad /usr/include/ -i```
-=======
 7. Extraia e transfira a pasta **glad/** do diretório **glad/include/** para a para o diretório **include/** do projeto.
-
-
->>>>>>> Stashed changes
 
 ## PARA COMPILAR E EXECURAR:
 Na pasta raiz do projeto execute:</br>
   ```make```
-
 
 ## Autores
 

@@ -25,6 +25,7 @@ Credits::Credits(SceneMaster* sceneMaster, const glm::vec2 win_dimentions, float
 
   sansPsx64 = new TextRender(textShader, "res/fonts/FreeSans.ttf", "res/fonts/IconicPSx.ttf", 64);
   sansKey64 = new TextRender(textShader, "res/fonts/FreeSans.ttf", "res/fonts/KeyCapsFLF.ttf", 64);
+  soapStore200 = new TextRender(textShader, "res/fonts/soap_store.otf", 200);
   
   backGround = new ImageRender(imageShader, "res/img/bkg0.png", 800, 600);
 }
@@ -75,6 +76,9 @@ void Credits::draw() {
   
   // draws UI
   glDepthRange(0.0f, 0.5f);
+  soapStore200->renderLeft("Hugo Oliveira", 225.0f, 400.0f, 0.5f, glm::vec3(0.8f));
+  soapStore200->renderLeft("Joel Felipe", 250.0f, 300.0f, 0.5f, glm::vec3(0.8f));
+  sansKey64->renderLeft("Visit our repository (github.com/mala-ufn/WallTetris)", 25.0f, 100.0f, 0.3f, glm::vec3(0.8f));
 
   if (jspresent) {
     sansPsx64->renderLeft("Press \\C to back", 25.0f, 25.0f, 0.35f, glm::vec3(1.0f));

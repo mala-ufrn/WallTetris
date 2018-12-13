@@ -24,7 +24,8 @@ private:
   Shader *textShader,
          *imageShader;
   TextRender *sansPsx64,
-             *sansKey64;
+             *sansKey64,
+             *soapStore200;
   ImageRender *backGround;
 
 public:
